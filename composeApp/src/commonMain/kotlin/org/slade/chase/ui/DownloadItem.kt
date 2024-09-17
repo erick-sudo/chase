@@ -20,7 +20,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import chase.composeapp.generated.resources.Res
 import chase.composeapp.generated.resources.compose_multiplatform
 import kotlinx.coroutines.delay
@@ -72,13 +74,16 @@ fun DownloadItem() {
         ) {
             Text(
                 text = "He sells sea shells at the sea shore.",
+                overflow = TextOverflow.Ellipsis,
+                fontSize = 12.sp
             )
 
             Text(
                 text = "$bytesReadAnimatedState/$contentLength",
                 textAlign = TextAlign.Right,
                 modifier = Modifier
-                    .fillMaxWidth()
+                    .fillMaxWidth(),
+                fontSize = 12.sp
             )
 
             Slider(

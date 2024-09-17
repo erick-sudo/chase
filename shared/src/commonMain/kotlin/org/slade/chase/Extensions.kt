@@ -2,6 +2,12 @@ package org.slade.chase
 
 import kotlin.math.floor
 
+val byteUnits = listOf("B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB")
+
+fun Float.suffixByteSize(): String {
+    val highestQuotient = (this / 1024).toInt()
+}
+
 fun Long.ranges(n: Int = 2): List<Pair<Long, Long>> {
     require(this >= RANGE_THRESH_HOLD) { "A value greater than zero is required" }
     val posts = (0L..this).lineSpace(n.let { if(it >= 2) it else 2 } + 1)

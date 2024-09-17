@@ -7,7 +7,6 @@ import kotlinx.coroutines.launch
 import org.slade.chase.MimeTypesMap
 import org.slade.chase.STATE_FILE_NAME
 import org.slade.chase.Settings
-import org.slade.chase.fileName
 import org.slade.chase.models.DownloadItem
 import java.io.File
 import java.io.FileInputStream
@@ -22,6 +21,15 @@ import java.net.URL
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.StandardCopyOption
+
+
+fun Path.fileName(): String {
+    return  if(nameCount > 0) getName(nameCount - 1).toString() else ""
+}
+
+fun URL.fileName(): String {
+    return Path.of(path).fileName()
+}
 
 actual suspend fun deserializeDownloadItem(id: String): DownloadItem {
     return deserializeDownloadItem(File(Settings.temporaryDirectory.toFile(), id))
@@ -181,7 +189,7 @@ fun savingTo(fileName: String): Path {
  * and save file to the configured download directory.
  */
 actual suspend fun DownloadItem.assemble(
-    assembleBytesStateFlow: MutableStateFlow<Long>? = null
+    assembleBytesStateFlow: MutableStateFlow<Long>
 ) = coroutineScope {
 
     val saveTo = savingTo(URL(this@assemble.source).fileName())

@@ -1,5 +1,6 @@
 package org.slade.chase.tasks
 
+import kotlinx.coroutines.flow.MutableStateFlow
 import org.slade.chase.models.DownloadItem
 
 /**
@@ -35,3 +36,10 @@ expect suspend fun DownloadItem.downloadEntireFile(): Long
 expect suspend fun DownloadItem.downloadPart(index: Int): Long
 
 expect suspend fun DownloadItem.downloadPartsParallel()
+
+/**
+ * Read a download item from a state file,
+ * determine mime type,
+ * and save file to the configured download directory.
+ */
+expect suspend fun DownloadItem.assemble(assembleBytesStateFlow: MutableStateFlow<Long>)
