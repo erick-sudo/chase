@@ -22,7 +22,9 @@ import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun DrawRect() {
+fun DrawRect(
+
+) {
 
     var rotate by remember { mutableStateOf(false) }
 

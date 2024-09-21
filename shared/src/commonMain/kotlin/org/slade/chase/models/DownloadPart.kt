@@ -3,10 +3,12 @@ package org.slade.chase.models
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
-@OptIn(ExperimentalUuidApi::class)
-data class DownloadPart (
-    var id: String,
-    var index: Int,
-    var offset: Long,
-    var end: Long,
-)
+interface IDownloadPart {
+    val id: String
+    val index: Int
+    val offset: Long
+    val end: Long
+    var retrieved: Long
+}
+
+expect class DownloadPart: IDownloadPart

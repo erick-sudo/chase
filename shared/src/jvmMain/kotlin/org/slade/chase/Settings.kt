@@ -13,7 +13,7 @@ object Settings {
     }
 
     val systemThreadCount: Int by lazy {
-        4
+        8
     }
 
     val downloadsDirectory: Path by lazy {

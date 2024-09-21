@@ -1,12 +1,12 @@
 package org.slade.chase
 
+import org.slade.chase.models.DownloadItem
+import org.slade.chase.models.DownloadState
 import kotlin.math.floor
 
-val byteUnits = listOf("B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB")
+expect fun Double.suffixByteSize(): String
 
-fun Float.suffixByteSize(): String {
-    val highestQuotient = (this / 1024).toInt()
-}
+expect fun DownloadItem.inferState(): DownloadState
 
 fun Long.ranges(n: Int = 2): List<Pair<Long, Long>> {
     require(this >= RANGE_THRESH_HOLD) { "A value greater than zero is required" }

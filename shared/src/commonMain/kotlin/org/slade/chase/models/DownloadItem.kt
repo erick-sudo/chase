@@ -1,10 +1,14 @@
 package org.slade.chase.models
 
-import kotlin.uuid.ExperimentalUuidApi
-import kotlin.uuid.Uuid
+interface IDownloadItem {
+    val id: String
+    val source: String
+    var parts: List<DownloadPart>
+    var transferEncoding: TransferEncoding
+}
 
-data class DownloadItem @OptIn(ExperimentalUuidApi::class) constructor(
-    val id: String = Uuid.random().toString(),
-    val source: String,
-    var parts: List<DownloadPart> = emptyList()
-)
+expect class DownloadItem(
+    url: String
+): IDownloadItem {
+    val contentLength: Long
+}

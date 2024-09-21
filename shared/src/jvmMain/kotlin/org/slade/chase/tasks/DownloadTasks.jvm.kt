@@ -1,12 +1,14 @@
 package org.slade.chase.tasks
 
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 import org.slade.chase.MimeTypesMap
 import org.slade.chase.STATE_FILE_NAME
 import org.slade.chase.Settings
+import org.slade.chase.models.BytesReadCarrier
 import org.slade.chase.models.DownloadItem
 import java.io.File
 import java.io.FileInputStream
@@ -46,23 +48,41 @@ private suspend fun deserializeDownloadItem(root: File): DownloadItem = coroutin
 }
 
 actual suspend fun DownloadItem.serialize() = coroutineScope {
-    ObjectOutputStream(Files.newOutputStream(Path.of(Settings.temporaryDirectory.toString(), this@serialize.id, STATE_FILE_NAME))).use { oStream ->
+
+    val rootDir = Path.of(Settings.temporaryDirectory.toString(), this@serialize.id)
+        .also {
+            if(Files.notExists(it)) {
+                Files.createDirectories(it)
+            }
+        }
+
+    ObjectOutputStream(Files.newOutputStream(Path.of(rootDir.toString(), STATE_FILE_NAME))).use { oStream ->
         oStream.writeObject(this@serialize)
     }
+}
+
+actual suspend fun List<DownloadItem>.serialize() = coroutineScope {
+    this@serialize.map { downloadItem ->
+        launch {
+            downloadItem.serialize()
+        }
+    }.joinAll()
 }
 
 actual suspend fun deserializeDownloadItems(): List<DownloadItem> = coroutineScope {
     try {
         val items: MutableList<DownloadItem> = mutableListOf()
         Files.newDirectoryStream(Settings.temporaryDirectory).use { dirstrm ->
-            for (path in dirstrm) {
-                if (Files.isDirectory(path)) {
-                    items += deserializeDownloadItem(path.toFile())
+            for (rootPath in dirstrm) {
+                val expectedStateFilePath = Path.of(rootPath.toString(), STATE_FILE_NAME)
+                if (Files.isDirectory(rootPath) && Files.exists(expectedStateFilePath)) {
+                    items += deserializeDownloadItem(rootPath)
                 }
             }
         }
         items
     } catch (exc: IOException) {
+        exc.printStackTrace()
         emptyList()
     }
 }
@@ -94,7 +114,7 @@ private fun resolveMimeType(bytes: ByteArray) = MimeTypesMap.entries.find { byte
 suspend fun readWrite(
     inputStream: InputStream,
     outputStream: OutputStream,
-    bytesReadStateFlow: MutableStateFlow<Long>? = null
+    onBytesWritten: (Long) -> Unit
 ): Long = coroutineScope {
     var successfulBytes: Long = 0
     inputStream.use { iStream ->
@@ -103,9 +123,7 @@ suspend fun readWrite(
         while ((iStream.read(buffer).also { bytesRead = it }) != -1) {
             outputStream.write(buffer, 0, bytesRead)
             successfulBytes+=bytesRead
-            bytesReadStateFlow?.also {
-                it.value = successfulBytes
-            }
+            onBytesWritten(successfulBytes)
         }
         outputStream.flush()
         bytesRead
@@ -117,7 +135,9 @@ suspend fun readWrite(
 /**
  * Download the entire file
  */
-actual suspend fun DownloadItem.downloadEntireFile(): Long = coroutineScope {
+actual suspend fun DownloadItem.downloadEntireFile(
+    bytesAssembledStateFlow: MutableStateFlow<BytesReadCarrier>
+): Long = coroutineScope {
 
     val url = URL(this@downloadEntireFile.source)
 
@@ -133,7 +153,13 @@ actual suspend fun DownloadItem.downloadEntireFile(): Long = coroutineScope {
         readWrite(
             httpURLConnection.inputStream,
             FileOutputStream(Path.of(Settings.temporaryDirectory.toString(), this@downloadEntireFile.id, part.id).toFile())
-        )
+        ) { bytesWritten ->
+            bytesAssembledStateFlow.value = BytesReadCarrier(
+                part.id,
+                part.index,
+                bytesWritten
+            )
+        }
     } ?: 0L
 }
 
@@ -143,7 +169,8 @@ actual suspend fun DownloadItem.downloadEntireFile(): Long = coroutineScope {
  * @return the number of written bytes
  */
 actual suspend fun DownloadItem.downloadPart(
-    index: Int
+    index: Int,
+    bytesAssembledStateFlow: MutableStateFlow<BytesReadCarrier>
 ): Long = coroutineScope {
 
     val url = URL(this@downloadPart.source)
@@ -160,15 +187,26 @@ actual suspend fun DownloadItem.downloadPart(
 
         readWrite(
             httpURLConnection.inputStream,
-            FileOutputStream(Path.of(Settings.temporaryDirectory.toString(), this@downloadPart.id, part.id).toFile())
-        )
+            FileOutputStream(Path.of(Settings.temporaryDirectory.toString(), this@downloadPart.id, part.id).toFile()),
+        ) { bytesWritten ->
+            bytesAssembledStateFlow.value = BytesReadCarrier(
+                part.id,
+                part.index,
+                bytesWritten
+            )
+        }
     }?: 0
 }
 
-actual suspend fun DownloadItem.downloadPartsParallel() = coroutineScope {
+actual suspend fun DownloadItem.downloadPartsParallel(
+    bytesAssembledStateFlows: List<MutableStateFlow<BytesReadCarrier>>
+) = coroutineScope {
     List(parts.size) { index ->
         launch {
-            this@downloadPartsParallel.downloadPart(index)
+            this@downloadPartsParallel.downloadPart(
+                index,
+                bytesAssembledStateFlows[index]
+            )
         }
     }.joinAll()
 }
@@ -189,7 +227,7 @@ fun savingTo(fileName: String): Path {
  * and save file to the configured download directory.
  */
 actual suspend fun DownloadItem.assemble(
-    assembleBytesStateFlow: MutableStateFlow<Long>
+    assembleBytesStateFlow: MutableStateFlow<BytesReadCarrier>
 ) = coroutineScope {
 
     val saveTo = savingTo(URL(this@assemble.source).fileName())
@@ -214,8 +252,8 @@ actual suspend fun DownloadItem.assemble(
                     bytesAssembled += bytesRead
 
                     // Emit number of bytes assembled
-                    assembleBytesStateFlow?.also {
-                        it.value = bytesAssembled
+                    assembleBytesStateFlow.also {
+                        it.value = BytesReadCarrier(part.id, part.index, bytesAssembled)
                     }
 
                     // Attempt assembling the file's magic bytes
