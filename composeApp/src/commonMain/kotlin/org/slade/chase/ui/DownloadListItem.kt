@@ -1,16 +1,19 @@
 package org.slade.chase.ui
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.Button
+import androidx.compose.material.DropdownMenu
+import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
@@ -99,28 +102,21 @@ fun DownloadListItem(
         }
 
         AnimatedVisibility(showContextMenu) {
-            Dialog(
+            DropdownMenu(
+                expanded = showContextMenu,
                 onDismissRequest = { showContextMenu = false },
+                modifier = Modifier
+                    .background(color = MaterialTheme.colors.primaryVariant)
             ) {
-                Column {
-                    listOf("Resume", "Preview", "Restart", "Stop", "Cancel", "Delete").forEach {
-                        Button(
-                            onClick = {},
-                            modifier = Modifier
-                        ) {
-                            Text(text = it)
-                        }
+                listOf("Resume", "Preview", "Restart", "Stop", "Cancel", "Delete").forEach {
+                    DropdownMenuItem(
+                        onClick = {},
+                        modifier = Modifier
+                    ) {
+                        Text(text = it)
                     }
                 }
             }
         }
     }
 }
-
-//@Preview
-//@Composable
-//fun DownloadListItemPreview() {
-//    MaterialTheme {
-//        //DownloadListItem()
-//    }
-//}
