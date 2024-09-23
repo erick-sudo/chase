@@ -10,12 +10,12 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.Icon
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Close
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -90,7 +90,7 @@ fun ChaseWindow(
                 ) {
                     toolBar()
 
-                    Text("Color: $color")
+                    Text("Color: $")
                 }
 
                 // Window control icons
@@ -101,10 +101,7 @@ fun ChaseWindow(
                     Button(
                         modifier = Modifier,
                         elevation = null,
-                        colors = ButtonDefaults.buttonColors(
-                            backgroundColor = Color.Transparent,
-                            contentColor = Color.DarkGray,
-                        ),
+                        colors = ButtonDefaults.buttonColors(),
                         shape = RectangleShape,
                         onClick = {
                             onCloseRequest()

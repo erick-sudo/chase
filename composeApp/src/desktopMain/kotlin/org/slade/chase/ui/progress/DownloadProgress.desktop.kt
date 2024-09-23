@@ -1,10 +1,8 @@
-package org.slade.chase.ui
+package org.slade.chase.ui.progress
 
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -13,7 +11,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
@@ -24,7 +21,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import org.jetbrains.compose.resources.painterResource
 import org.slade.chase.models.BytesReadCarrier
 import org.slade.chase.models.DownloadItem
-import org.slade.chase.ui.progress.ByteProgress
 
 @Composable
 actual fun DownloadItem.DownloadProgress(
@@ -71,12 +67,12 @@ actual fun DownloadItem.DownloadProgress(
         ) {
             Column (
                 modifier = Modifier
-                    .padding(5.dp)
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(10.dp)),
+                    .fillMaxWidth(),
             ) {
                 ByteProgress(
-                    bytesReadFlows = bytesReadPartFlows
+                    bytesReadFlows = bytesReadPartFlows,
+                    strokeWidth = 10f,
+                    radius = 40f
                 )
             }
         }

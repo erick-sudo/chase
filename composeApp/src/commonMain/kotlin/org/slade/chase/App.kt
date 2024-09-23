@@ -4,13 +4,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.Button
-import androidx.compose.material.DrawerValue
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
-import androidx.compose.material.rememberDrawerState
-import androidx.compose.material.rememberScaffoldState
+import androidx.compose.material3.Button
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -25,19 +22,15 @@ import org.slade.chase.models.BytesReadCarrier
 import org.slade.chase.models.DownloadItem
 import org.slade.chase.tasks.deserializeDownloadItems
 import org.slade.chase.ui.DownloadListItem
+import org.slade.chase.ui.theme.ChaseTheme
 
 @Composable
 @Preview
 fun App() {
-    MaterialTheme {
+
+    ChaseTheme {
 
         val coroutineScope = rememberCoroutineScope()
-
-        val drawerState = rememberDrawerState(DrawerValue.Closed)
-
-        val scaffoldState = rememberScaffoldState(
-            drawerState = drawerState
-        )
 
         var downloadItems by remember {
             mutableStateOf<List<Pair<DownloadItem, List<MutableStateFlow<BytesReadCarrier>>>>>(emptyList())
@@ -72,7 +65,13 @@ fun App() {
 //        }
 
         Scaffold(
-            scaffoldState = scaffoldState,
+            floatingActionButton = {
+                FloatingActionButton(
+                    onClick = { }
+                ) {
+                    Text("New")
+                }
+            }
         ) { paddingValues ->
 
             LazyColumn(

@@ -31,7 +31,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Canvas
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.Job
@@ -45,6 +44,7 @@ import org.slade.chase.models.BytesReadCarrier
 import org.slade.chase.models.DownloadItem
 import org.slade.chase.models.DownloadState
 import org.slade.chase.tasks.serialize
+import org.slade.chase.ui.progress.DownloadProgress
 
 @Composable
 fun DownloadListItem(

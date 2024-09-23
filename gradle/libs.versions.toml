@@ -21,6 +21,7 @@ androidx-navigation = "2.8.1"
 coil = "2.4.0"
 ksp = "1.9.23-1.0.20"
 room = "2.6.1"
+google-fonts="1.7.2"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -40,6 +41,8 @@ logback = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
 ktor-server-core = { module = "io.ktor:ktor-server-core-jvm", version.ref = "ktor" }
 ktor-server-netty = { module = "io.ktor:ktor-server-netty-jvm", version.ref = "ktor" }
 ktor-server-tests = { module = "io.ktor:ktor-server-tests-jvm", version.ref = "ktor" }
+
+#google-fonts = { module= "androidx.compose.ui:ui-text-google-fonts", version.ref = "google-fonts" }
 
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "androidx-navigation" }
 
