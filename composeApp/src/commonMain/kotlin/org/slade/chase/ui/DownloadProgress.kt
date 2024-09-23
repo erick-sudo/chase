@@ -23,6 +23,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -32,35 +33,30 @@ import org.slade.chase.models.DownloadPart
 import org.slade.chase.suffixByteSize
 
 @Composable
-fun DownloadItem.DownloadProgress(
+expect fun DownloadItem.DownloadProgress(
     modifier: Modifier = Modifier,
     bytesReadPartFlows: List<MutableStateFlow<BytesReadCarrier>>
-) {
+)
 
-    Row(
+@Composable
+fun DownloadItem.ByteProgress(
+    bytesReadFlows: List<MutableStateFlow<BytesReadCarrier>>,
+    draw: DrawScope.(index: Int, flow: MutableStateFlow<BytesReadCarrier>) -> Unit
+) {
+    Canvas(
         modifier = Modifier
-            .clip(RoundedCornerShape(10.dp))
-            .then(modifier),
-        verticalAlignment = Alignment.CenterVertically
     ) {
-        parts.mapIndexed { index, downloadPart ->
-            downloadPart.ByteProgress(
-                modifier = Modifier
-                    .weight(1f),
-                bytesReadFlow = bytesReadPartFlows[index],
-                isLast = index == parts.size - 1,
-                isFirst = index == 0
-            )
-        }
+//        bytesReadFlows.forEachIndexed { index, flw ->
+//            flw.collectAsState()
+//            draw(index, flw)
+//        }
     }
 }
 
 @Composable
 fun DownloadPart.ByteProgress(
     modifier: Modifier = Modifier,
-    bytesReadFlow: MutableStateFlow<BytesReadCarrier>,
-    isFirst: Boolean,
-    isLast: Boolean
+    bytesReadFlow: MutableStateFlow<BytesReadCarrier>
 ) {
 
     val rangeLength by remember {

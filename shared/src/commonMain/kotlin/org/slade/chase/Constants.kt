@@ -13,6 +13,6 @@ val MimeTypes: Map<String, List<String>> = mapOf(
 
 val MimeTypesMap: Map<String, String> by lazy {
     MimeTypes.entries.fold(emptyMap()) { acc, (mime, signatures) ->
-        acc +signatures.map { signature -> signature to mime }
+        acc + signatures.map { signature -> signature to mime }
     }
 }

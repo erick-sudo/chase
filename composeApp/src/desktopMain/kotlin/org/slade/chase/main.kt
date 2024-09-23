@@ -1,16 +1,23 @@
 package org.slade.chase
 
-import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.material.MaterialTheme
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
+import org.slade.chase.ui.ChaseWindow
 
 fun main() = application {
-    Window(
-        onCloseRequest = ::exitApplication,
-        title = "Chase",
+
+    ChaseWindow(
+        onCloseRequest = this::exitApplication,
+        title = "Chase"
     ) {
-        App()
+        //App()
     }
+
+//    Window(
+//        onCloseRequest = ::exitApplication,
+//        title = "Chase",
+//    ) {
+//        App()
+//    }
 }

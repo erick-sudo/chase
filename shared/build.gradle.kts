@@ -38,6 +38,10 @@ kotlin {
     jvm()
     
     sourceSets {
+        androidMain.dependencies {
+
+        }
+
         commonMain.dependencies {
             // put your Multiplatform dependencies here
             implementation(libs.kotlinx.coroutines.swing)

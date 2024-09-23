@@ -91,18 +91,6 @@ fun App() {
                     Button(
                         onClick = {
                             coroutineScope.launch {
-
-                            }
-                        }
-                    ) {
-                        Text("Serialize Items")
-                    }
-                }
-
-                item {
-                    Button(
-                        onClick = {
-                            coroutineScope.launch {
                                 downloadItems = deserializeDownloadItems().map { downloadItem ->
                                     downloadItem to downloadItem.parts.map { MutableStateFlow(BytesReadCarrier(it.id, it.index, it.retrieved)) }
                                 }
@@ -110,40 +98,6 @@ fun App() {
                         }
                     ) {
                         Text("Deserialize Items")
-                    }
-                }
-
-                item {
-                    Button(
-                        onClick = {
-//                            coroutineScope.launch {
-//                                downloadItems.mapIndexed { index, (downloadItem, flow) ->
-//                                    launch {
-//                                        downloadItem.parts.map { part ->
-//                                            launch {
-//                                                val window = part.end - part.offset
-//                                                var offset = 0L
-//                                                while(offset <= window) {
-//                                                    flow.value = BytesReadCarrier(
-//                                                        part.id,
-//                                                        part.index,
-//                                                        offset
-//                                                    )
-//                                                    offset+=10
-//                                                }
-//                                                println("${part.index} Offset=${part.offset} Retrieved=${part.retrieved} End=${part.end} Window=${window}")
-//                                            }
-//                                        }
-//
-//                                        println("Done: $index : ${downloadItem.source}")
-//                                    }
-//                                }
-//
-//                                println("All Jobs Done")
-//                            }
-                        }
-                    ) {
-                        Text("Start Downloads")
                     }
                 }
             }
