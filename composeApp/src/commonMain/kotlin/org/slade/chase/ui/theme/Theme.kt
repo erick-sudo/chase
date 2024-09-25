@@ -253,26 +253,33 @@ val unspecified_scheme = ColorFamily(
 )
 
 @Composable
+private fun colorScheme(darkTheme: Boolean = isSystemInDarkTheme()) = when {
+//      dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
+//          val context = LocalContext.current
+//          if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
+//      }
+    darkTheme -> darkScheme
+    else -> lightScheme
+}
+
+@Composable
 fun ChaseTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
     // dynamicColor: Boolean = true,
     content: @Composable() () -> Unit
 ) {
-  val colorScheme = when {
-//      dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-//          val context = LocalContext.current
-//          if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
-//      }
-      
-      darkTheme -> darkScheme
-      else -> lightScheme
-  }
 
   MaterialTheme(
-    colorScheme = colorScheme,
+    colorScheme = colorScheme(darkTheme),
     typography = AppTypography(),
     content = content
   )
+}
+
+object ChaseTheme {
+    val colors
+        @Composable
+        get() = colorScheme()
 }
 

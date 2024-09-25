@@ -4,41 +4,45 @@ import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.width
-import androidx.compose.material.Slider
+import androidx.compose.foundation.background
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.graphics.drawscope.rotate
-import androidx.compose.ui.graphics.drawscope.scale
-import androidx.compose.ui.graphics.drawscope.translate
-import androidx.compose.ui.unit.dp
-import kotlin.math.atan
+import org.slade.chase.ui.theme.ChaseTheme
 import kotlin.math.cos
+import kotlin.math.min
+import kotlin.math.pow
 import kotlin.math.sin
-import kotlin.math.tanh
+import kotlin.math.sqrt
+
+actual class SpeedoMeterConfig : ISpeedoMeterConfig {
+    override var background: Color = Color.Transparent
+    override var trackColor: Color = Color.Black.copy(alpha = 0.125f)
+    override var needleSectorAngle: Float = 30f
+    override var sweepAngle: Float = 240f
+    override var needleBaseGap: Float = 1f
+    override var needleBaseRadius: Float = 1f
+    override var progressStrokeWidth: Float = 4f
+}
 
 @Composable
 actual fun SpeedoMeter(
-    modifier: Modifier
+    modifier: Modifier,
+    config: SpeedoMeterConfig,
+    value: Float
 ) {
 
-    var meter by remember {
-        mutableStateOf(0f)
-    }
+    val primaryColor = ChaseTheme.colors.primary
 
     val meterValue by animateFloatAsState(
-        targetValue = meter,
+        targetValue = value,
         animationSpec = spring(
             dampingRatio = Spring.DampingRatioHighBouncy,
             stiffness = Spring.StiffnessLow
@@ -47,93 +51,146 @@ actual fun SpeedoMeter(
 
     Canvas(
         modifier = Modifier
+            .background(color = config.background)
             .then(modifier)
     ) {
-        val sweepAngle = 240f
+        val backgroundColor = config.background
+        val trackColor = config.trackColor
+        val sweepAngle = config.sweepAngle
+        val progressColors = listOf(Color(80, 7, 36), primaryColor.copy(alpha = 0.5f), primaryColor, Color(80, 7, 36))
         val height = size.height
         val width = size.width
-        val startAngle = 150f
+        val startAngle = (360f - sweepAngle).let { unused ->
+            90f + ((unused/2f))
+        }
+        val needleBaseRadius = config.needleBaseRadius
+        val needleSectorAngle = config.needleSectorAngle
+
+        val gap = config.needleBaseGap
 
         val centerOffset = Offset(width / 2f, height / 2.09f)
 
-        val needleAngle = (meterValue / 100f) * sweepAngle + startAngle
-        val needleLength = 160f
-        val needleBaseRadius = 24f
+        val progress = (meterValue / 100f) * sweepAngle
 
-        // Top point of needle
-        val top = getXY(radius = needleLength, center = centerOffset, angle = needleAngle)
-
-        // Base points
-        val baseLeft = getXY(radius = needleBaseRadius, center = centerOffset, angle = needleAngle - 35f)
-        val baseRight = getXY(radius = needleBaseRadius, center = centerOffset, angle = needleAngle + 35f)
-
-        val shiftedBaseLeft = getXY(radius = needleBaseRadius + 8f, center = centerOffset, angle = needleAngle - 35f)
-        val shiftedBaseRight = getXY(radius = needleBaseRadius + 8f, center = centerOffset, angle = needleAngle + 35f)
-
-        drawCircle(
-            color = Color.Cyan,
-            radius = 4f,
-            center = shiftedBaseLeft,
-            style = Stroke(width = 2f)
+        val needleAngle = progress + startAngle
+        val scaleRadius = (min(width, height) / 2) * 0.85f
+        val needleLength = scaleRadius * 0.75f
+        val scaleOffset = getXY(
+            radius = scaleRadius,
+            center = centerOffset,
+            angle = startAngle
         )
 
+        val bLeft = getXY(radius = needleBaseRadius, center = centerOffset, angle = needleAngle - needleSectorAngle / 2)
+        val bRight = getXY(radius = needleBaseRadius, center = centerOffset, angle = needleAngle + needleSectorAngle / 2)
+
+        val chordVector = bLeft - bRight
+        val chordMagnitude = sqrt(chordVector.x.pow(2) + chordVector.y.pow(2))
+        val chordUnitVector = chordVector / chordMagnitude
+        val chordAdvance = (chordUnitVector * gap)
+
+        val needleBaseLeft = bLeft - chordAdvance
+        val needleBaseRight = bRight + chordAdvance
+
+        // Needle pointer
+        val needlePointer = getXY(radius = needleLength, center = centerOffset, angle = needleAngle)
+        // Needle base
+        val needleBase = getXY(radius = gap, center = centerOffset, angle = needleAngle)
+
         val needlePath = Path().apply {
-            moveTo(top)
-            lineTo(baseLeft)
-            lineTo(centerOffset)
-            lineTo(baseRight)
+            moveTo(needleBaseLeft)
+            lineTo(needlePointer)
+            lineTo(needleBaseRight)
+            lineTo(needleBase)
             close()
         }
 
         val basePath = Path().apply {
-            moveTo(baseLeft)
+            moveTo(bLeft)
             arcTo(
                 rect = Rect(
                     center = centerOffset,
-                    radius = 36f,
+                    radius = needleBaseRadius,
                 ),
-                startAngleDegrees = needleAngle + 35f,
-                sweepAngleDegrees = 290f,
+                startAngleDegrees = needleAngle + needleSectorAngle / 2,
+                sweepAngleDegrees = 360f - needleSectorAngle,
                 forceMoveTo = true
             )
             lineTo(centerOffset)
             close()
         }
 
-//        scale(
-//            scale = 1.2f,
-//            pivot = centerOffset
-//        ) {
-//            drawPath(
-//                path = basePath,
-//                color = Color.Yellow,
-//                style = Stroke(width = 1f)
-//            )
-//        }
+        drawCircle(
+            brush = Brush.radialGradient(
+                listOf(
+                    backgroundColor,
+                    backgroundColor,
+                    primaryColor.copy(alpha = 0.3f),
+                    backgroundColor,
+                    backgroundColor
+                )
+            ),
+            radius = scaleRadius,
+            center = centerOffset
+        )
+
+        val trackPath = Path().apply {
+            moveTo(scaleOffset)
+            arcTo(
+                rect = Rect(
+                    center = centerOffset,
+                    radius = scaleRadius,
+                ),
+                startAngleDegrees = startAngle,
+                sweepAngleDegrees = sweepAngle,
+                forceMoveTo = true
+            )
+        }
+
+        val progressPath = Path().apply {
+            moveTo(scaleOffset)
+            arcTo(
+                rect = Rect(
+                    center = centerOffset,
+                    radius = scaleRadius,
+                ),
+                startAngleDegrees = startAngle,
+                sweepAngleDegrees = progress,
+                forceMoveTo = true
+            )
+        }
 
         drawPath(
             path = basePath,
-            color = Color.Yellow,
-            style = Stroke(width = 1f)
+            brush = Brush.sweepGradient(
+                colors = progressColors,
+                center = centerOffset
+            ),
         )
 
         drawPath(
             path = needlePath,
-            color = Color.Black,
-            style = Stroke(width = 1f)
+            brush = Brush.sweepGradient(
+                colors = progressColors,
+                center = centerOffset
+            ),
+        )
+
+        drawPath(
+            path = trackPath,
+            color = trackColor,
+            style = Stroke(width = config.progressStrokeWidth, cap = StrokeCap.Round)
+        )
+
+        drawPath(
+            path = progressPath,
+            brush = Brush.sweepGradient(
+                colors = progressColors,
+                center = centerOffset
+            ),
+            style = Stroke(width = config.progressStrokeWidth, cap = StrokeCap.Round)
         )
     }
-
-    Spacer(modifier = Modifier.height(20.dp))
-
-    Slider(
-        modifier = Modifier.width(400.dp),
-        value = meter,
-        valueRange = 0f..100f,
-        onValueChange = { newValue ->
-            meter = newValue
-        }
-    )
 }
 
 fun Path.build(offsets: List<Offset>) {
