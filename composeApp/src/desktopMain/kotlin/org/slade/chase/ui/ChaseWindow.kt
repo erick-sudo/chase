@@ -152,7 +152,7 @@ fun ChaseWindow(
                                 Icon(
                                     modifier = Modifier
                                         .size(16.dp),
-                                    imageVector = vectorResource(Res.drawable.maximize_window),
+                                    imageVector = vectorResource(Res.drawable.restore_window),
                                     contentDescription = "Maximize"
                                 )
                             }
