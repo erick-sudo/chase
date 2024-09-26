@@ -32,11 +32,20 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.key.KeyEvent
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.WindowState
 import androidx.compose.ui.window.rememberWindowState
+import chase.composeapp.generated.resources.Res
+import chase.composeapp.generated.resources.close_window
+import chase.composeapp.generated.resources.compose_multiplatform
+import chase.composeapp.generated.resources.maximize_window
+import chase.composeapp.generated.resources.minimize_window
+import chase.composeapp.generated.resources.restore_window
+import org.jetbrains.compose.resources.imageResource
+import org.jetbrains.compose.resources.vectorResource
 import org.slade.chase.ui.theme.ChaseTheme
 
 @Composable
@@ -127,7 +136,7 @@ fun ChaseWindow(
                                 Icon(
                                     modifier = Modifier
                                         .size(16.dp),
-                                    imageVector = Icons.Outlined,
+                                    imageVector = vectorResource(Res.drawable.minimize_window),
                                     contentDescription = "Minimize"
                                 )
                             }
@@ -143,7 +152,7 @@ fun ChaseWindow(
                                 Icon(
                                     modifier = Modifier
                                         .size(16.dp),
-                                    imageVector = Icons.Outlined.Face,
+                                    imageVector = vectorResource(Res.drawable.maximize_window),
                                     contentDescription = "Maximize"
                                 )
                             }
@@ -159,7 +168,7 @@ fun ChaseWindow(
                                 Icon(
                                     modifier = Modifier
                                         .size(16.dp),
-                                    imageVector = Icons.Outlined.Close,
+                                    imageVector = vectorResource(Res.drawable.close_window),
                                     contentDescription = "Close"
                                 )
                             }
