@@ -3,6 +3,7 @@ package org.slade.chase.ui.theme
 //import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.material3.darkColorScheme
 //import androidx.compose.material3.dynamicDarkColorScheme
@@ -259,7 +260,7 @@ private fun colorScheme(darkTheme: Boolean = isSystemInDarkTheme()) = when {
 //          if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
 //      }
     darkTheme -> darkScheme
-    else -> lightScheme
+    else -> darkScheme
 }
 
 @Composable
@@ -272,14 +273,24 @@ fun ChaseTheme(
 
   MaterialTheme(
     colorScheme = colorScheme(darkTheme),
-    typography = AppTypography(),
-    content = content
-  )
+    typography = AppTypography()
+  ) {
+      Surface {
+          content()
+      }
+  }
 }
 
 object ChaseTheme {
     val colors
         @Composable
         get() = colorScheme()
-}
 
+    val borderGradientColors
+    @Composable
+    get() = listOf(
+        colors.primary,
+        colors.inversePrimary,
+        colors.primary
+    )
+}

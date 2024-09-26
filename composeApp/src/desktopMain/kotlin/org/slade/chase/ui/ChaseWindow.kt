@@ -1,5 +1,8 @@
 package org.slade.chase.ui
 
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
@@ -10,14 +13,23 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Close
+import androidx.compose.material.icons.outlined.Face
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.input.key.KeyEvent
@@ -43,87 +55,127 @@ fun ChaseWindow(
     toolBar: @Composable (RowScope.() -> Unit) = { },
     content: @Composable (ColumnScope.() -> Unit)
 ) {
-    ChaseTheme {
-        Window(
-            onCloseRequest = onCloseRequest,
-            state = state,
-            visible = visible,
-            title = title,
-            undecorated = true,
-            resizable = resizable,
-            enabled = enabled,
-            focusable = focusable,
-            alwaysOnTop = alwaysOnTop,
-            onPreviewKeyEvent = onPreviewKeyEvent,
-            onKeyEvent = onKeyEvent,
-        ) {
-
-            Column(
+    Window(
+        onCloseRequest = onCloseRequest,
+        state = state,
+        visible = visible,
+        title = title,
+        transparent = true,
+        undecorated = true,
+        resizable = resizable,
+        enabled = enabled,
+        focusable = focusable,
+        alwaysOnTop = alwaysOnTop,
+        onPreviewKeyEvent = onPreviewKeyEvent,
+        onKeyEvent = onKeyEvent,
+    ) {
+        ChaseTheme {
+            Surface (
                 modifier = Modifier
-                    .fillMaxSize()
+                    .fillMaxSize(),
+                border = BorderStroke(
+                    width = 1.dp,
+                    brush = Brush.linearGradient(
+                        colors = ChaseTheme.borderGradientColors
+                    )
+                )
             ) {
-                // Top app bar
-                Row(
-                    modifier = Modifier
-                        .height(40.dp)
-                        .fillMaxWidth()
-
-                ) {
-
-                    // Window Icon
-                    if(icon != null) {
-                        Box(
-                            modifier = Modifier,
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Icon(
-                                painter = icon,
-                                contentDescription = "Icon"
-                            )
-                        }
-                    }
-
-                    // Toolbar items
+                Column {
                     Row(
                         modifier = Modifier
-                            .weight(1f)
-                            .fillMaxHeight()
+                            .height(36.dp)
+                            .fillMaxWidth()
+                            .background(MaterialTheme.colorScheme.surfaceContainer)
                     ) {
-                        toolBar()
-                    }
 
-                    // Window control icons
-                    Row(
-                        modifier = Modifier
-                            .fillMaxHeight()
-                    ) {
-                        Button(
-                            modifier = Modifier,
-                            contentPadding = PaddingValues(2.dp),
-                            elevation = null,
-                            colors = ButtonDefaults.buttonColors(),
-                            shape = RectangleShape,
-                            onClick = {
-                                onCloseRequest()
+                        // Window Icon
+                        if(icon != null) {
+                            Box(
+                                modifier = Modifier,
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Icon(
+                                    painter = icon,
+                                    contentDescription = "Icon"
+                                )
                             }
+                        }
 
+                        // Toolbar items
+                        Row(
+                            modifier = Modifier
+                                .weight(1f)
+                                .fillMaxHeight()
                         ) {
-                            Icon(
-                                imageVector = Icons.Outlined.Close,
-                                contentDescription = "Close window"
-                            )
+                            toolBar()
+                        }
+
+                        // Window control icons
+                        Row(
+                            modifier = Modifier
+                                .fillMaxHeight()
+                        ) {
+                            FilledTonalIconButton(
+                                modifier = Modifier
+                                    .size(36.dp),
+                                shape = RectangleShape,
+                                colors = IconButtonDefaults.outlinedIconButtonColors(),
+                                onClick = {
+                                    onCloseRequest()
+                                }
+                            ) {
+                                Icon(
+                                    modifier = Modifier
+                                        .size(16.dp),
+                                    imageVector = Icons.Outlined,
+                                    contentDescription = "Minimize"
+                                )
+                            }
+                            FilledTonalIconButton(
+                                modifier = Modifier
+                                    .size(36.dp),
+                                shape = RectangleShape,
+                                colors = IconButtonDefaults.outlinedIconButtonColors(),
+                                onClick = {
+                                    onCloseRequest()
+                                }
+                            ) {
+                                Icon(
+                                    modifier = Modifier
+                                        .size(16.dp),
+                                    imageVector = Icons.Outlined.Face,
+                                    contentDescription = "Maximize"
+                                )
+                            }
+                            FilledTonalIconButton(
+                                modifier = Modifier
+                                    .size(36.dp),
+                                shape = RectangleShape,
+                                colors = IconButtonDefaults.outlinedIconButtonColors(),
+                                onClick = {
+                                    onCloseRequest()
+                                }
+                            ) {
+                                Icon(
+                                    modifier = Modifier
+                                        .size(16.dp),
+                                    imageVector = Icons.Outlined.Close,
+                                    contentDescription = "Close"
+                                )
+                            }
                         }
                     }
-                }
 
-                // Main window content
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                ) {
-                    content()
+                    // Main window content
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                    ) {
+//                    content()
+                    }
                 }
             }
         }
     }
 }
+

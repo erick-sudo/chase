@@ -21,6 +21,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import org.jetbrains.compose.resources.painterResource
 import org.slade.chase.models.BytesReadCarrier
 import org.slade.chase.models.DownloadItem
+import org.slade.chase.ui.ChaseWindow
 
 @Composable
 actual fun DownloadItem.DownloadProgress(
@@ -57,10 +58,9 @@ actual fun DownloadItem.DownloadProgress(
     }
 
     if(showProgressWindow) {
-        Window(
+        ChaseWindow(
             onCloseRequest = { showProgressWindow = false },
             state = progressWindowState,
-            undecorated = false,
             resizable = false,
             title = "Download Progress",
             icon = painterResource(Res.drawable.compose_multiplatform)

@@ -6,6 +6,7 @@ import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.expandIn
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -14,14 +15,17 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.DropdownMenu
-import androidx.compose.material.DropdownMenuItem
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.outlined.ThumbUp
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -31,6 +35,8 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.Job
@@ -159,40 +165,62 @@ fun DownloadListItem(
                     animationSpec = spring(dampingRatio = Spring.DampingRatioHighBouncy, stiffness = Spring.StiffnessLow)
                 )
             ) {
-                DropdownMenu(
-                    expanded = showContextMenu,
-                    onDismissRequest = { showContextMenu = false },
-                    modifier = Modifier
-                        .background(color = MaterialTheme.colors.background),
+                MaterialTheme(
+                    shapes = MaterialTheme.shapes.copy(extraSmall = RoundedCornerShape(8.dp))
                 ) {
-                    // listOf("Resume", "Preview", "Restart", "Stop", "Cancel", "Delete")
-                    DropdownMenuItem(
-                        onClick = {
-                            currentJob = DownloadState.Starting to null
-                            showContextMenu = false
-                        },
+                    DropdownMenu(
+                        expanded = showContextMenu,
+                        onDismissRequest = { showContextMenu = false },
                         modifier = Modifier
+//                            .shadow(
+//                                elevation = 0.dp,
+//                                ambientColor = Color.White,
+//                                spotColor = Color.White
+//                            )
+//                            .border(
+//                                width = 1.dp,
+//                                shape = RoundedCornerShape(8.dp),
+//                                brush = Brush.sweepGradient(
+//                                    colors = listOf(
+//                                        MaterialTheme.colorScheme.primary,
+//                                        MaterialTheme.colorScheme.inversePrimary,
+//                                        MaterialTheme.colorScheme.primary
+//                                    )
+//                                ))
+//                        .background(color = MaterialTheme.colorScheme.background),
                     ) {
-                        Text(text = "Resume")
-                    }
+                        // listOf("Resume", "Preview", "Restart", "Stop", "Cancel", "Delete")
+                        DropdownMenuItem(
+                            text = {
+                                Text(text = "Resume")
+                            },
+                            leadingIcon = {
+                                Icon(imageVector = Icons.Outlined.ThumbUp, contentDescription = "Resume")
+                            },
+                            onClick = {
+                                currentJob = DownloadState.Starting to null
+                                showContextMenu = false
+                            },
+                        )
 
-                    DropdownMenuItem(
-                        onClick = {
-                            coroutineScope.launch {
-                                instructionChannel.send {
-                                    currentJob.second?.let {
-                                        if(it.isActive) {
-                                            it.cancel("Cancel Download")
+                        DropdownMenuItem(
+                            text = {
+                                Text(text = "Pause")
+                            },
+                            onClick = {
+                                coroutineScope.launch {
+                                    instructionChannel.send {
+                                        currentJob.second?.let {
+                                            if(it.isActive) {
+                                                it.cancel("Cancel Download")
+                                            }
                                         }
+                                        downloadItem.serialize()
+                                        showContextMenu = false
                                     }
-                                    downloadItem.serialize()
-                                    showContextMenu = false
                                 }
                             }
-                        },
-                        modifier = Modifier
-                    ) {
-                        Text(text = "Pause")
+                        )
                     }
                 }
             }
