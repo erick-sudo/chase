@@ -170,24 +170,7 @@ fun DownloadListItem(
                 ) {
                     DropdownMenu(
                         expanded = showContextMenu,
-                        onDismissRequest = { showContextMenu = false },
-                        modifier = Modifier
-//                            .shadow(
-//                                elevation = 0.dp,
-//                                ambientColor = Color.White,
-//                                spotColor = Color.White
-//                            )
-//                            .border(
-//                                width = 1.dp,
-//                                shape = RoundedCornerShape(8.dp),
-//                                brush = Brush.sweepGradient(
-//                                    colors = listOf(
-//                                        MaterialTheme.colorScheme.primary,
-//                                        MaterialTheme.colorScheme.inversePrimary,
-//                                        MaterialTheme.colorScheme.primary
-//                                    )
-//                                ))
-//                        .background(color = MaterialTheme.colorScheme.background),
+                        onDismissRequest = { showContextMenu = false }
                     ) {
                         // listOf("Resume", "Preview", "Restart", "Stop", "Cancel", "Delete")
                         DropdownMenuItem(

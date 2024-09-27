@@ -2,9 +2,13 @@ package org.slade.chase.ui.progress
 
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Button
+import androidx.compose.material.Slider
 import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -34,8 +38,8 @@ actual fun DownloadItem.DownloadProgress(
 
     val progressWindowState = rememberWindowState(
         size = DpSize(
-            400.dp,
-            400.dp
+            512.dp,
+            424.dp
         )
     )
 
@@ -69,10 +73,25 @@ actual fun DownloadItem.DownloadProgress(
                 modifier = Modifier
                     .fillMaxWidth(),
             ) {
-                ByteProgress(
-                    bytesReadFlows = bytesReadPartFlows,
-                    strokeWidth = 10f,
-                    radius = 40f
+//                ByteProgress(
+//                    bytesReadFlows = bytesReadPartFlows,
+//                    strokeWidth = 10f,
+//                    radius = 40f
+//                )
+                SpeedoMeter(
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxWidth()
+                        .padding(10.dp),
+                    config = SpeedoMeterConfig().apply {
+                        needleBaseGap = 4f
+                        progressStrokeWidth = 48f
+                        trackColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.125f)
+                        needleBaseRadius = 24f
+                        needleSectorAngle = 70f
+                        sweepAngle = 180f
+                    },
+                    value = 75f
                 )
             }
         }

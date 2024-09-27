@@ -10,8 +10,8 @@ fun main() = application {
 
     val windowState = rememberWindowState(
         size = DpSize(
-            800.dp,
-            600.dp
+            700.dp,
+            400.dp
         )
     )
 

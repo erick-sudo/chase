@@ -24,3 +24,21 @@ We would appreciate your feedback on Compose/Web and Kotlin/Wasm in the public S
 If you face any issues, please report them on [GitHub](https://github.com/JetBrains/compose-multiplatform/issues).
 
 You can open the web application by running the `:composeApp:wasmJsBrowserDevelopmentRun` Gradle task.
+
+```kotlin
+SpeedoMeter(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxWidth()
+                    .padding(10.dp),
+                config = SpeedoMeterConfig().apply {
+                    needleBaseGap = 4f
+                    progressStrokeWidth = 48f
+                    trackColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.125f)
+                    needleBaseRadius = 24f
+                    needleSectorAngle = 70f
+                    sweepAngle = 180f
+                },
+                value = value
+            )
+```

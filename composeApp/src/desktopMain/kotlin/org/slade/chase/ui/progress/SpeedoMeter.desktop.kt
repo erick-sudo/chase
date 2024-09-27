@@ -5,17 +5,22 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.unit.dp
 import org.slade.chase.ui.theme.ChaseTheme
+import kotlin.math.abs
 import kotlin.math.cos
 import kotlin.math.min
 import kotlin.math.pow
@@ -36,7 +41,8 @@ actual class SpeedoMeterConfig : ISpeedoMeterConfig {
 actual fun SpeedoMeter(
     modifier: Modifier,
     config: SpeedoMeterConfig,
-    value: Float
+    value: Float,
+    progressColors: List<Color>
 ) {
 
     val primaryColor = ChaseTheme.colors.primary
@@ -52,12 +58,12 @@ actual fun SpeedoMeter(
     Canvas(
         modifier = Modifier
             .background(color = config.background)
+            .clip(RectangleShape)
             .then(modifier)
     ) {
         val backgroundColor = config.background
         val trackColor = config.trackColor
         val sweepAngle = config.sweepAngle
-        val progressColors = listOf(Color(80, 7, 36), primaryColor.copy(alpha = 0.5f), primaryColor, Color(80, 7, 36))
         val height = size.height
         val width = size.width
         val startAngle = (360f - sweepAngle).let { unused ->
@@ -66,14 +72,20 @@ actual fun SpeedoMeter(
         val needleBaseRadius = config.needleBaseRadius
         val needleSectorAngle = config.needleSectorAngle
 
-        val gap = config.needleBaseGap
+        val halfStrokeWidth = (config.progressStrokeWidth / 2)
 
-        val centerOffset = Offset(width / 2f, height / 2.09f)
+        val gap = config.needleBaseGap
+        val scaleRadius = center.minDimension - halfStrokeWidth
+        val h = when(sweepAngle <= 180) {
+            true -> 0f
+            else -> scaleRadius * cos(Math.toRadians((360.0 - sweepAngle) / 2).toFloat())
+        }
+
+        val centerOffset = Offset(width * 0.5f, height - h - halfStrokeWidth)
 
         val progress = (meterValue / 100f) * sweepAngle
 
         val needleAngle = progress + startAngle
-        val scaleRadius = (min(width, height) / 2) * 0.85f
         val needleLength = scaleRadius * 0.75f
         val scaleOffset = getXY(
             radius = scaleRadius,
@@ -120,20 +132,6 @@ actual fun SpeedoMeter(
             close()
         }
 
-        drawCircle(
-            brush = Brush.radialGradient(
-                listOf(
-                    backgroundColor,
-                    backgroundColor,
-                    primaryColor.copy(alpha = 0.3f),
-                    backgroundColor,
-                    backgroundColor
-                )
-            ),
-            radius = scaleRadius,
-            center = centerOffset
-        )
-
         val trackPath = Path().apply {
             moveTo(scaleOffset)
             arcTo(
@@ -179,7 +177,10 @@ actual fun SpeedoMeter(
         drawPath(
             path = trackPath,
             color = trackColor,
-            style = Stroke(width = config.progressStrokeWidth, cap = StrokeCap.Round)
+            style = Stroke(
+                width = config.progressStrokeWidth,
+                cap = StrokeCap.Round
+            )
         )
 
         drawPath(
@@ -210,6 +211,9 @@ fun Path.moveTo(offset: Offset) {
 fun Path.lineTo(offset: Offset) {
     lineTo(offset.x, offset.y)
 }
+
+val Offset.minDimension
+    get() = min(this.x, this.y)
 
 
 fun getXY(radius: Float, center: Offset, angle: Float): Offset {
