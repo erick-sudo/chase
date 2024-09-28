@@ -8,9 +8,7 @@ import java.net.HttpURLConnection
 import java.net.URL
 import java.util.UUID
 
-actual class DownloadItem actual constructor(
-    url: String
-): IDownloadItem, Serializable {
+actual class DownloadItem private actual constructor(url: String): IDownloadItem, Serializable {
     override val id: String = UUID.randomUUID().toString()
 
     override val source: String = url
@@ -65,6 +63,12 @@ actual class DownloadItem actual constructor(
             parts.last().end + 1
         } catch (e: NoSuchElementException) {
             0L
+        }
+    }
+
+    actual companion object {
+        actual fun init(url: String): DownloadItem {
+            return DownloadItem(url)
         }
     }
 }

@@ -7,8 +7,10 @@ interface IDownloadItem {
     var transferEncoding: TransferEncoding
 }
 
-expect class DownloadItem(
-    url: String
-): IDownloadItem {
+expect class DownloadItem private constructor (url: String): IDownloadItem {
     val contentLength: Long
+
+    companion object {
+        fun init(url: String): DownloadItem
+    }
 }

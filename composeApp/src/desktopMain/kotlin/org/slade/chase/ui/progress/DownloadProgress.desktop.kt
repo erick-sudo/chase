@@ -66,7 +66,6 @@ actual fun DownloadItem.DownloadProgress(
             onCloseRequest = { showProgressWindow = false },
             state = progressWindowState,
             resizable = false,
-            title = "Download Progress",
             icon = painterResource(Res.drawable.compose_multiplatform)
         ) {
             Column (

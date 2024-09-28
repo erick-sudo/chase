@@ -17,7 +17,6 @@ fun main() = application {
 
     ChaseWindow(
         onCloseRequest = this::exitApplication,
-        title = "Chase",
         state = windowState
     ) {
         App()

@@ -3,6 +3,7 @@ package org.slade.chase.ui
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
@@ -28,6 +29,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.input.key.KeyEvent
@@ -50,7 +52,6 @@ fun ChaseWindow(
     onCloseRequest: () -> Unit,
     state: WindowState = rememberWindowState(),
     visible: Boolean = true,
-    title: String = "Chase",
     icon: Painter? = null,
     resizable: Boolean = true,
     enabled: Boolean = true,
@@ -70,7 +71,6 @@ fun ChaseWindow(
         onCloseRequest = onCloseRequest,
         state = state,
         visible = isVisible,
-        title = title,
         transparent = true,
         undecorated = true,
         resizable = resizable,
@@ -125,7 +125,9 @@ fun ChaseWindow(
                                     .weight(1f)
                                     .fillMaxHeight()
                             ) {
-                                toolBar()
+                                ChaseTheme {
+                                    toolBar()
+                                }
                             }
 
                             // Window control icons
