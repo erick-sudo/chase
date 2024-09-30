@@ -75,7 +75,7 @@ kotlin {
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutines.swing)
-//            implementation(libs.androidx.compose.material.iconsExtended)
+            implementation(libs.compose.material.icons.extended)
             api(compose.preview)
         }
     }

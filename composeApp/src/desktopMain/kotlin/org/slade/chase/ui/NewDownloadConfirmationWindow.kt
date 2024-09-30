@@ -25,6 +25,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.rememberWindowState
 import org.slade.chase.models.DownloadItem
 
@@ -38,7 +39,10 @@ internal fun NewDownloadConfirmation(
 
     val windowState = rememberWindowState(
         width = 480.dp,
-        height = 360.dp
+        height = 360.dp,
+        position = WindowPosition(
+            alignment = Alignment.Center
+        )
     )
 
 //    LaunchedEffect("Initialize") {

@@ -87,7 +87,7 @@ fun ChaseWindow(
                 border = BorderStroke(
                     width = 1.dp,
                     brush = Brush.linearGradient(
-                        colors = ChaseTheme.borderGradientColors
+                        colors = ChaseTheme.borderGradientColors.map { it.copy(alpha = 0.5f) }
                     )
                 )
             ) {

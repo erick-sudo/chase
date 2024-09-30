@@ -1,8 +1,10 @@
 package org.slade.chase.ui.progress
 
+import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -49,9 +51,13 @@ actual fun SpeedoMeter(
 
     val meterValue by animateFloatAsState(
         targetValue = value,
-        animationSpec = spring(
-            dampingRatio = Spring.DampingRatioHighBouncy,
-            stiffness = Spring.StiffnessLow
+//        animationSpec = spring(
+//            dampingRatio = Spring.DampingRatioHighBouncy,
+//            stiffness = Spring.StiffnessLow
+//        )
+        animationSpec = tween(
+            durationMillis = 200,
+            easing = LinearOutSlowInEasing
         )
     )
 

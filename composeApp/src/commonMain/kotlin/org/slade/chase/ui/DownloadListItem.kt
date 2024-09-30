@@ -54,6 +54,7 @@ import org.slade.chase.ui.progress.DownloadProgress
 
 @Composable
 expect fun DownloadListItem(
+    modifier: Modifier = Modifier,
     downloadItem: DownloadItem,
     bytesReadPartFlows: List<MutableStateFlow<BytesReadCarrier>>
 )

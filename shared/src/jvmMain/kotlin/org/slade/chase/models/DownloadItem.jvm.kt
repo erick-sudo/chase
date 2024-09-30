@@ -28,6 +28,8 @@ actual class DownloadItem private actual constructor(url: String): IDownloadItem
 
         val responseCode = httpURLConnection.responseCode
 
+        httpURLConnection.inputStream.close()
+
         if(responseCode == HttpURLConnection.HTTP_OK) {
 
             val acceptRanges = httpURLConnection.headerFields["Accept-Ranges"]?.let { if(it.isNotEmpty()) it[0] else null } ?: ""
