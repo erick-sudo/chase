@@ -1,6 +1,5 @@
 package org.slade.chase.ui
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -11,11 +10,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -34,7 +30,7 @@ import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.rememberWindowState
 import chase.composeapp.generated.resources.Res
 import chase.composeapp.generated.resources.baseline_folder_24
-import chase.composeapp.generated.resources.outline_globe_24
+import chase.composeapp.generated.resources.outline_web_24
 import org.jetbrains.compose.resources.vectorResource
 import org.slade.chase.ui.dialogs.FileDialogMode
 import org.slade.chase.ui.dialogs.openFileDialog
@@ -115,7 +111,7 @@ fun CreateDownloadWindow(
                         .fillMaxWidth(),
                     trailingIcon = {
                         Icon(
-                            imageVector = vectorResource(Res.drawable.outline_globe_24),
+                            imageVector = vectorResource(Res.drawable.outline_web_24),
                             contentDescription = "New Download Url"
                         )
                     },

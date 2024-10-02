@@ -1,13 +1,10 @@
 package org.slade.chase.ui.progress
 
 import androidx.compose.animation.core.LinearOutSlowInEasing
-import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -20,13 +17,13 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.unit.dp
+import org.slade.chase.ui.getXY
+import org.slade.chase.ui.lineTo
+import org.slade.chase.ui.minDimension
+import org.slade.chase.ui.moveTo
 import org.slade.chase.ui.theme.ChaseTheme
-import kotlin.math.abs
 import kotlin.math.cos
-import kotlin.math.min
 import kotlin.math.pow
-import kotlin.math.sin
 import kotlin.math.sqrt
 
 actual class SpeedoMeterConfig : ISpeedoMeterConfig {
@@ -198,41 +195,4 @@ actual fun SpeedoMeter(
             style = Stroke(width = config.progressStrokeWidth, cap = StrokeCap.Round)
         )
     }
-}
-
-fun Path.build(offsets: List<Offset>) {
-    offsets.forEachIndexed { index, offset ->
-        if(index == 0) {
-            moveTo(offset)
-        } else {
-            lineTo(offset)
-        }
-    }
-}
-
-fun Path.moveTo(offset: Offset) {
-    moveTo(offset.x, offset.y)
-}
-
-fun Path.lineTo(offset: Offset) {
-    lineTo(offset.x, offset.y)
-}
-
-val Offset.minDimension
-    get() = min(this.x, this.y)
-
-
-fun getXY(radius: Float, center: Offset, angle: Float): Offset {
-    return Offset(
-        x = getX(radius = radius, center = center, angle = angle),
-        y = getY(radius = radius, center = center, angle = angle)
-    )
-}
-
-fun getX(radius: Float, center: Offset, angle: Float): Float {
-    return center.x + radius * cos(Math.toRadians(angle.toDouble()).toFloat())
-}
-
-fun getY(radius: Float, center: Offset, angle: Float): Float {
-    return center.y + radius * sin(Math.toRadians(angle.toDouble()).toFloat())
 }

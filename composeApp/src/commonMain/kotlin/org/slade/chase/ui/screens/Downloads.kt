@@ -25,6 +25,8 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedButton
@@ -149,9 +151,9 @@ fun Downloads() {
                 *DownloadCategory.entries.map { it.name }.toTypedArray()
             ).mapIndexed { index, tab ->
                 ElevatedButton(
-                    border = BorderStroke(
-                        width = 1.dp,
-                        color = if(index == downloadsHorizontalPagerState.currentPage) MaterialTheme.colorScheme.primary else Color.Transparent
+                    colors = ButtonDefaults.elevatedButtonColors(
+                        containerColor = if(index == downloadsHorizontalPagerState.currentPage) MaterialTheme.colorScheme.primaryContainer else Color.Unspecified,
+                        contentColor = if(index == downloadsHorizontalPagerState.currentPage) MaterialTheme.colorScheme.onPrimaryContainer else Color.Unspecified
                     ),
                     contentPadding = PaddingValues(horizontal = 16.dp, vertical = 2.dp),
                     onClick = {
@@ -316,18 +318,18 @@ fun DownloadHistory(
             contentPadding = PaddingValues(8.dp)
         ) {
             items(DownloadCategory.entries.zip(categoryIcons)) { (category, icon) ->
-                Card(
-                    colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.surfaceContainer
-                    ),
+                ElevatedButton(
+                    shape = RoundedCornerShape(10.dp),
+                    onClick = {
+                        onCategoryChange(category)
+                    },
                     modifier = Modifier
                         .padding(4.dp)
-                        .clickable {
-                            onCategoryChange(category)
-                        },
                 ) {
                     Row(
-                        verticalAlignment = Alignment.CenterVertically
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .fillMaxWidth()
                     ) {
                         Box(
                             modifier = Modifier

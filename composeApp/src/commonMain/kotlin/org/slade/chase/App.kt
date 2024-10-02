@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -20,6 +21,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.KeyboardArrowRight
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Email
@@ -37,21 +39,17 @@ import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.ThumbUp
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material.icons.outlined.Add
-import androidx.compose.material.icons.outlined.Face
 import androidx.compose.material.icons.outlined.Menu
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.Button
-import androidx.compose.material3.DismissibleDrawerSheet
-import androidx.compose.material3.DismissibleNavigationDrawer
 import androidx.compose.material3.DrawerValue
+import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.NavigationDrawerItem
-import androidx.compose.material3.PermanentDrawerSheet
-import androidx.compose.material3.PermanentNavigationDrawer
 import androidx.compose.material3.RichTooltip
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -63,18 +61,23 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.unit.dp
 import chase.composeapp.generated.resources.Res
 import chase.composeapp.generated.resources.outline_cell_wifi_24
 import chase.composeapp.generated.resources.outline_cloud_download_24
+import chase.composeapp.generated.resources.outline_web_24
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.vectorResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.slade.chase.ui.BrowserExtensions
 import org.slade.chase.ui.NewDownload
+import org.slade.chase.ui.RotatingSurface
 import org.slade.chase.ui.screens.Downloads
-import org.slade.chase.ui.screens.NetworkMonitor
+import org.slade.chase.ui.screens.Network
 import org.slade.chase.ui.screens.Settings
 import org.slade.chase.ui.theme.ChaseTheme
 
@@ -85,8 +88,12 @@ fun App() {
 
     val coroutineScope = rememberCoroutineScope()
 
-    val pagerState = rememberPagerState(0) {
+    val pagerState = rememberPagerState(1) {
         3
+    }
+
+    var showBrowserExtensions by remember {
+        mutableStateOf(false)
     }
 
     val extensionDrawerState = rememberDrawerState(DrawerValue.Closed)
@@ -133,19 +140,67 @@ fun App() {
                     drawerShape = RectangleShape
                 ) {
                     Column(Modifier.verticalScroll(rememberScrollState())) {
-                        Spacer(Modifier.height(12.dp))
-                        items.forEach { item ->
-                            NavigationDrawerItem(
-                                shape = RectangleShape,
-                                icon = { Icon(item, contentDescription = null) },
-                                label = { Text(item.name.substringAfterLast(".")) },
-                                selected = item == Icons.Default.Star,
-                                onClick = {
-                                    coroutineScope.launch { extensionDrawerState.close() }
-                                },
-                                modifier = Modifier.padding(horizontal = 12.dp)
-                            )
-                        }
+                        // Spacer(Modifier.height(12.dp))
+
+                        //BrowserExtensions()
+                        NavigationDrawerItem(
+                            shape = RectangleShape,
+                            icon = { Icon(vectorResource(Res.drawable.outline_web_24), contentDescription = null) },
+                            label = {
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth(),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Text(
+                                        text = "Browser Monitoring",
+                                        modifier = Modifier
+                                            .weight(1f)
+                                    )
+
+                                    Box{
+                                        RotatingSurface(
+                                            modifier = Modifier,
+                                            rotate = showBrowserExtensions,
+                                            sweepRotation = 90f
+                                        ) {
+                                            Icon(
+                                                imageVector = Icons.AutoMirrored.Outlined.KeyboardArrowRight,
+                                                contentDescription = ""
+                                            )
+                                        }
+
+                                        MaterialTheme(
+                                            shapes = MaterialTheme.shapes.copy(
+                                                extraSmall = RoundedCornerShape(8.dp)
+                                            )
+                                        ) {
+                                            DropdownMenu(
+                                                modifier = Modifier
+                                                    .background(MaterialTheme.colorScheme.surface)
+                                                    .border(
+                                                        width = 1.dp,
+                                                        brush = Brush.linearGradient(
+                                                            colors = ChaseTheme.borderGradientColors.map { it.copy(alpha = 0.3f) }
+                                                        ),
+                                                        shape = RoundedCornerShape(8.dp)
+                                                    ),
+                                                expanded = showBrowserExtensions,
+                                                onDismissRequest = {
+                                                    showBrowserExtensions = false
+                                                }
+                                            ) {
+                                                BrowserExtensions()
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            selected = false,
+                            onClick = {
+                                showBrowserExtensions = true
+                            },
+                        )
                     }
                 }
             }
@@ -283,7 +338,7 @@ fun App() {
 
                         when(page) {
                             0 -> Downloads()
-                            1 -> NetworkMonitor()
+                            1 -> Network()
                             2 -> Settings()
                         }
                     }

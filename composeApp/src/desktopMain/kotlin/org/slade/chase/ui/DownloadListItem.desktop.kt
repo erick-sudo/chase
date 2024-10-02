@@ -6,9 +6,9 @@ import androidx.compose.animation.core.spring
 import androidx.compose.animation.expandIn
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -263,8 +263,8 @@ actual fun DownloadListItem(
 
         TextButton(
             modifier = Modifier
-                .fillMaxHeight(0.75f)
-                .width(36.dp),
+                .size(36.dp),
+            contentPadding = PaddingValues(2.dp),
             onClick = { showContextMenu = true }
         ) {
             Icon(
