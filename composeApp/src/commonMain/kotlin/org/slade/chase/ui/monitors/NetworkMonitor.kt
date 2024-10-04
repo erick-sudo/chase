@@ -6,6 +6,7 @@ import org.slade.chase.ui.progress.SpeedoMeterConfig
 
 @Composable
 expect fun NetworkMonitor(
+    pointerPercentage: Float,
     value: Float,
     modifier: Modifier = Modifier,
     config: SpeedoMeterConfig = SpeedoMeterConfig()

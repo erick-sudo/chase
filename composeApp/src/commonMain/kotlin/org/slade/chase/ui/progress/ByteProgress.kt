@@ -31,13 +31,12 @@ fun DownloadItem.CircularByteProgress(
     bytesReadFlows: List<MutableStateFlow<BytesReadCarrier>>,
 ) {
 
+    val gradColors = ChaseTheme.borderGradientColors
+
+    val trackColor = MaterialTheme.colorScheme.surfaceContainer
+
     val gradientColors by remember {
-        mutableStateOf(listOf(
-            Color.Red,
-            Color.Yellow,
-            Color.Magenta,
-            Color.Red
-        ))
+        mutableStateOf(gradColors)
     }
 
     val combinedFlow = remember {
@@ -68,7 +67,8 @@ fun DownloadItem.CircularByteProgress(
             .then(modifier)
     ) {
         drawDoughnut(
-            brush = Brush.sweepGradient(colors = gradientColors.map { it.copy(alpha = 0.3f) }),
+            //brush = Brush.sweepGradient(colors = gradientColors.map { it.copy(alpha = 0.3f) }),
+            color = trackColor,
             startAngle = 0f,
             sweepAngle = 360f,
             radius = radius,

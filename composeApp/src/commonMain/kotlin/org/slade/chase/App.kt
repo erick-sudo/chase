@@ -74,11 +74,12 @@ import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.vectorResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.slade.chase.ui.BrowserExtensions
+import org.slade.chase.ui.DownloadItemDetails
 import org.slade.chase.ui.NewDownload
 import org.slade.chase.ui.RotatingSurface
 import org.slade.chase.ui.screens.Downloads
 import org.slade.chase.ui.screens.Network
-import org.slade.chase.ui.screens.Settings
+import org.slade.chase.ui.screens.SettingsScreen
 import org.slade.chase.ui.theme.ChaseTheme
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
@@ -88,8 +89,8 @@ fun App() {
 
     val coroutineScope = rememberCoroutineScope()
 
-    val pagerState = rememberPagerState(1) {
-        3
+    val pagerState = rememberPagerState(2) {
+        4
     }
 
     var showBrowserExtensions by remember {
@@ -201,6 +202,17 @@ fun App() {
                                 showBrowserExtensions = true
                             },
                         )
+
+                        NavigationDrawerItem(
+                            shape = RectangleShape,
+                            label = {
+                                Text(
+                                    text = "Enable Dark Theme"
+                                )
+                            },
+                            onClick = {},
+                            selected = false
+                        )
                     }
                 }
             }
@@ -210,7 +222,8 @@ fun App() {
                     Button(
                         onClick = {
                             newDownload = true
-                        }
+                        },
+                        shape = RoundedCornerShape(10.dp)
                     ) {
                         Icon(
                             imageVector = Icons.Outlined.Add,
@@ -339,7 +352,10 @@ fun App() {
                         when(page) {
                             0 -> Downloads()
                             1 -> Network()
-                            2 -> Settings()
+                            2 -> SettingsScreen()
+                            3 -> DownloadItemDetails(
+                                downloadId = "9aee6284-67cb-40a3-8bf1-fa23aba2191b"
+                            )
                         }
                     }
                 }

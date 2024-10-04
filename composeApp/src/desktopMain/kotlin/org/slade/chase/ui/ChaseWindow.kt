@@ -63,7 +63,7 @@ fun ChaseWindow(
     content: @Composable (BoxScope.() -> Unit)
 ) {
 
-    var isVisible by remember {
+    val isVisible by remember {
         mutableStateOf(visible)
     }
 
@@ -87,7 +87,10 @@ fun ChaseWindow(
                 border = BorderStroke(
                     width = 1.dp,
                     brush = Brush.linearGradient(
-                        colors = ChaseTheme.borderGradientColors.map { it.copy(alpha = 0.5f) }
+                        colors = when(state.placement == WindowPlacement.Maximized) {
+                            true -> listOf(Color.Transparent, Color.Transparent)
+                            else -> ChaseTheme.borderGradientColors.map { it.copy(alpha = 0.5f) }
+                        }
                     )
                 )
             ) {

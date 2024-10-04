@@ -26,16 +26,6 @@ import kotlin.math.cos
 import kotlin.math.pow
 import kotlin.math.sqrt
 
-actual class SpeedoMeterConfig : ISpeedoMeterConfig {
-    override var background: Color = Color.Transparent
-    override var trackColor: Color = Color.Black.copy(alpha = 0.125f)
-    override var needleSectorAngle: Float = 30f
-    override var sweepAngle: Float = 240f
-    override var needleBaseGap: Float = 1f
-    override var needleBaseRadius: Float = 1f
-    override var progressStrokeWidth: Float = 4f
-}
-
 @Composable
 actual fun SpeedoMeter(
     modifier: Modifier,
@@ -44,14 +34,8 @@ actual fun SpeedoMeter(
     progressColors: List<Color>
 ) {
 
-    val primaryColor = ChaseTheme.colors.primary
-
     val meterValue by animateFloatAsState(
         targetValue = value,
-//        animationSpec = spring(
-//            dampingRatio = Spring.DampingRatioHighBouncy,
-//            stiffness = Spring.StiffnessLow
-//        )
         animationSpec = tween(
             durationMillis = 200,
             easing = LinearOutSlowInEasing
@@ -64,7 +48,6 @@ actual fun SpeedoMeter(
             .clip(RectangleShape)
             .then(modifier)
     ) {
-        val backgroundColor = config.background
         val trackColor = config.trackColor
         val sweepAngle = config.sweepAngle
         val height = size.height
