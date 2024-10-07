@@ -11,14 +11,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Notifications
+import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -27,39 +24,75 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.core.screen.ScreenKey
 import chase.composeapp.generated.resources.Res
 import chase.composeapp.generated.resources.outline_file_download_24
 import chase.composeapp.generated.resources.outline_file_upload_24
-import kotlinx.coroutines.delay
 import org.jetbrains.compose.resources.vectorResource
+import org.slade.chase.ui.dialogs.DownloadCompleteDialog
 import org.slade.chase.ui.monitors.NetworkMonitor
 import org.slade.chase.ui.progress.SpeedoMeterConfig
 import org.slade.chase.ui.progress.Tick
 import org.slade.chase.ui.theme.ChaseTheme
 
-@Composable
-fun Network() {
+class NetworkMonitorScreen : Screen {
 
-    Column(
-        modifier = Modifier.fillMaxSize()
-    ) {
+    override val key: ScreenKey
+        get() = super.key
 
-        Row(
-            modifier = Modifier
-                .padding(16.dp)
+    @Composable
+    override fun Content() {
+        
+        var showDownloadCompleteDialog by remember {
+            mutableStateOf(false)
+        }
+
+        if(showDownloadCompleteDialog) {
+            DownloadCompleteDialog(
+                visible = showDownloadCompleteDialog,
+                onCloseRequest = {
+                    showDownloadCompleteDialog = false
+                }
+            )
+        }
+
+        Column(
+            modifier = Modifier.fillMaxSize()
         ) {
 
-            DownloadSpeed(
+            Row(
                 modifier = Modifier
-                    .weight(1f)
-            )
+                    .padding(16.dp)
+            ) {
 
-            Spacer(modifier = Modifier.width(16.dp))
+                DownloadSpeed(
+                    modifier = Modifier
+                        .weight(1f)
+                )
 
-            UploadSpeed(
+                Spacer(modifier = Modifier.width(16.dp))
+
+                UploadSpeed(
+                    modifier = Modifier
+                        .weight(1f)
+                )
+            }
+
+            Column(
                 modifier = Modifier
-                    .weight(1f)
-            )
+                    .padding(16.dp)
+            ) {
+                Button(
+                    onClick = {
+                        showDownloadCompleteDialog = true
+                    }
+                ) {
+                    Text(
+                        text = "Open Download Complete Dialog"
+                    )
+                }
+            }
         }
     }
 }

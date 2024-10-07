@@ -27,5 +27,6 @@ fun main() = application {
         state = windowState
     ) {
         App()
+        //VoyagerApp()
     }
 }

@@ -58,6 +58,8 @@ kotlin {
             implementation(libs.androidx.activity.compose)
             implementation(libs.androidx.navigation.compose)
             implementation(libs.androidx.compose.material.iconsExtended)
+            implementation(libs.androidx.room.ktx)
+            implementation(libs.androidx.room.runtime)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -69,7 +71,15 @@ kotlin {
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime.compose)
             implementation(libs.androidx.constraintlayout)
-            //implementation(libs.google.fonts)
+
+            implementation(libs.voyager.navigator)
+            implementation(libs.voyager.screenModel)
+            implementation(libs.voyager.bottomSheetNavigator)
+            implementation(libs.voyager.tabNavigator)
+            implementation(libs.voyager.transitions)
+            implementation(libs.voyager.koin)
+            implementation(libs.voyager.kodein)
+            implementation(libs.voyager.lifecycle.kmp)
             implementation(projects.shared)
         }
         desktopMain.dependencies {

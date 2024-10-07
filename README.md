@@ -42,3 +42,14 @@ SpeedoMeter(
                 value = value
             )
 ```
+
+Sport Reems   2    5500 * 2 = 11000
+Reem Hubs     2    (Sport Reems use different Hubs) 1800 each = 3600
+Tires         2    4500 + 4000 = 8500
+Chair         1    3000 + (400 shipment)
+Lighting System    4500
+
+Total 31000
+
+
+

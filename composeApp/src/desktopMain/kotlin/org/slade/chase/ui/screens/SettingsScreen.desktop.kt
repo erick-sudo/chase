@@ -44,6 +44,8 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
+import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.core.screen.ScreenKey
 import chase.composeapp.generated.resources.Res
 import chase.composeapp.generated.resources.baseline_folder_24
 import org.jetbrains.compose.resources.vectorResource
@@ -63,8 +65,19 @@ private fun rememberSettingsState(): SettingsState {
     }
 }
 
+actual class SettingsScreen actual constructor() : Screen {
+
+    override val key: ScreenKey
+        get() = "Settings"
+
+    @Composable
+    override fun Content() {
+        Settings()
+    }
+}
+
 @Composable
-actual fun SettingsScreen() {
+private fun Settings() {
 
     var concurrency by remember {
         mutableStateOf(false)

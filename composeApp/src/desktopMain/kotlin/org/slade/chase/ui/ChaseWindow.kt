@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.window.WindowDraggableArea
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButtonDefaults
@@ -57,8 +58,10 @@ fun ChaseWindow(
     enabled: Boolean = true,
     focusable: Boolean = true,
     alwaysOnTop: Boolean = false,
+    showTopBar: Boolean = true,
     onPreviewKeyEvent: (KeyEvent) -> Boolean = { false },
     onKeyEvent: (KeyEvent) -> Boolean = { false },
+    borderGradientColors: List<Color> = ChaseTheme.borderGradientColors,
     toolBar: @Composable (RowScope.() -> Unit) = { },
     content: @Composable (BoxScope.() -> Unit)
 ) {
@@ -89,7 +92,7 @@ fun ChaseWindow(
                     brush = Brush.linearGradient(
                         colors = when(state.placement == WindowPlacement.Maximized) {
                             true -> listOf(Color.Transparent, Color.Transparent)
-                            else -> ChaseTheme.borderGradientColors.map { it.copy(alpha = 0.5f) }
+                            else -> borderGradientColors.map { it.copy(alpha = 0.5f) }
                         }
                     )
                 )
@@ -103,107 +106,109 @@ fun ChaseWindow(
                             .height(36.dp)
                             .fillMaxWidth()
                     ) {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .background(MaterialTheme.colorScheme.surfaceContainer)
-                        ) {
-
-                            // Window Icon
-                            if(icon != null) {
-                                Box(
-                                    modifier = Modifier,
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    Icon(
-                                        painter = icon,
-                                        contentDescription = "Icon"
-                                    )
-                                }
-                            }
-
-                            // Toolbar items
+                        if(showTopBar) {
                             Row(
                                 modifier = Modifier
-                                    .weight(1f)
-                                    .fillMaxHeight()
+                                    .fillMaxSize()
+                                    .background(MaterialTheme.colorScheme.surfaceContainer)
                             ) {
-                                ChaseTheme {
-                                    toolBar()
-                                }
-                            }
 
-                            // Window control icons
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxHeight()
-                            ) {
-                                FilledTonalIconButton(
-                                    modifier = Modifier
-                                        .size(36.dp),
-                                    shape = RectangleShape,
-                                    colors = IconButtonDefaults.outlinedIconButtonColors(),
-                                    onClick = {
-                                        state.isMinimized = true
+                                // Window Icon
+                                if(icon != null) {
+                                    Box(
+                                        modifier = Modifier,
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        Icon(
+                                            painter = icon,
+                                            contentDescription = "Icon"
+                                        )
                                     }
-                                ) {
-                                    Icon(
-                                        modifier = Modifier
-                                            .size(16.dp),
-                                        imageVector = vectorResource(Res.drawable.minimize_window),
-                                        contentDescription = "Minimize"
-                                    )
                                 }
 
-                                if(resizable) {
+                                // Toolbar items
+                                Row(
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .fillMaxHeight()
+                                ) {
+                                    ChaseTheme {
+                                        toolBar()
+                                    }
+                                }
+
+                                // Window control icons
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxHeight()
+                                ) {
                                     FilledTonalIconButton(
                                         modifier = Modifier
                                             .size(36.dp),
                                         shape = RectangleShape,
                                         colors = IconButtonDefaults.outlinedIconButtonColors(),
                                         onClick = {
-                                            when(state.placement) {
-                                                WindowPlacement.Maximized -> state.placement = WindowPlacement.Floating
-                                                else -> state.placement = WindowPlacement.Maximized
-                                            }
+                                            state.isMinimized = true
                                         }
                                     ) {
-                                        Crossfade(
-                                            targetState = state.placement
-                                        ) { windowPlacement ->
-                                            when(windowPlacement) {
-                                                WindowPlacement.Maximized -> Icon(
-                                                    modifier = Modifier
-                                                        .size(16.dp),
-                                                    imageVector = vectorResource(Res.drawable.restore_window),
-                                                    contentDescription = "Restore"
-                                                )
-                                                else -> Icon(
-                                                    modifier = Modifier
-                                                        .size(16.dp),
-                                                    imageVector = vectorResource(Res.drawable.maximize_window),
-                                                    contentDescription = "Maximize"
-                                                )
+                                        Icon(
+                                            modifier = Modifier
+                                                .size(16.dp),
+                                            imageVector = vectorResource(Res.drawable.minimize_window),
+                                            contentDescription = "Minimize"
+                                        )
+                                    }
+
+                                    if(resizable) {
+                                        FilledTonalIconButton(
+                                            modifier = Modifier
+                                                .size(36.dp),
+                                            shape = RectangleShape,
+                                            colors = IconButtonDefaults.outlinedIconButtonColors(),
+                                            onClick = {
+                                                when(state.placement) {
+                                                    WindowPlacement.Maximized -> state.placement = WindowPlacement.Floating
+                                                    else -> state.placement = WindowPlacement.Maximized
+                                                }
+                                            }
+                                        ) {
+                                            Crossfade(
+                                                targetState = state.placement
+                                            ) { windowPlacement ->
+                                                when(windowPlacement) {
+                                                    WindowPlacement.Maximized -> Icon(
+                                                        modifier = Modifier
+                                                            .size(16.dp),
+                                                        imageVector = vectorResource(Res.drawable.restore_window),
+                                                        contentDescription = "Restore"
+                                                    )
+                                                    else -> Icon(
+                                                        modifier = Modifier
+                                                            .size(16.dp),
+                                                        imageVector = vectorResource(Res.drawable.maximize_window),
+                                                        contentDescription = "Maximize"
+                                                    )
+                                                }
                                             }
                                         }
                                     }
-                                }
 
-                                FilledTonalIconButton(
-                                    modifier = Modifier
-                                        .size(36.dp),
-                                    shape = RectangleShape,
-                                    colors = IconButtonDefaults.outlinedIconButtonColors(),
-                                    onClick = {
-                                        onCloseRequest()
-                                    }
-                                ) {
-                                    Icon(
+                                    FilledTonalIconButton(
                                         modifier = Modifier
-                                            .size(16.dp),
-                                        imageVector = vectorResource(Res.drawable.close_window),
-                                        contentDescription = "Close"
-                                    )
+                                            .size(36.dp),
+                                        shape = RectangleShape,
+                                        colors = IconButtonDefaults.outlinedIconButtonColors(),
+                                        onClick = {
+                                            onCloseRequest()
+                                        }
+                                    ) {
+                                        Icon(
+                                            modifier = Modifier
+                                                .size(16.dp),
+                                            imageVector = vectorResource(Res.drawable.close_window),
+                                            contentDescription = "Close"
+                                        )
+                                    }
                                 }
                             }
                         }

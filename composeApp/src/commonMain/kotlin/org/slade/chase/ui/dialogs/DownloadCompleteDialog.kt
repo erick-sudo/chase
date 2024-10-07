@@ -1,10 +1,11 @@
-package org.slade.chase.ui
+package org.slade.chase.ui.dialogs
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 
 @Composable
-expect fun DownloadItemDetails(
+expect fun DownloadCompleteDialog(
     modifier: Modifier = Modifier,
-    downloadId: String
+    visible: Boolean,
+    onCloseRequest: () -> Unit
 )

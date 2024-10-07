@@ -1,6 +1,5 @@
 package org.slade.chase.ui.screens
 
-import androidx.compose.runtime.Composable
+import cafe.adriel.voyager.core.screen.Screen
 
-@Composable
-expect fun SettingsScreen()
+expect class SettingsScreen(): Screen
