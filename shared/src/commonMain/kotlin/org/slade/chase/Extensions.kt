@@ -4,6 +4,8 @@ import org.slade.chase.models.DownloadItem
 import org.slade.chase.models.DownloadState
 import kotlin.math.floor
 
+val byteUnits = listOf("B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB")
+
 expect fun Double.suffixByteSize(): String
 
 expect fun DownloadItem.inferState(): DownloadState

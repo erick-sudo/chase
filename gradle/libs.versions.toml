@@ -23,6 +23,7 @@ ksp = "1.9.23-1.0.20"
 room = "2.6.1"
 google-fonts="1.7.2"
 voyager = "1.1.0-beta02"
+kotlinx-serialization = "1.7.1"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -42,6 +43,8 @@ logback = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
 ktor-server-core = { module = "io.ktor:ktor-server-core-jvm", version.ref = "ktor" }
 ktor-server-netty = { module = "io.ktor:ktor-server-netty-jvm", version.ref = "ktor" }
 ktor-server-tests = { module = "io.ktor:ktor-server-tests-jvm", version.ref = "ktor" }
+
+kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name="kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
 
 androidx-compose-material-iconsExtended = { module = "androidx.compose.material:material-icons-extended" }
 compose-material-icons-extended = { module = "org.jetbrains.compose.material:material-icons-extended-desktop", version.ref = "compose-plugin" }
@@ -75,3 +78,4 @@ kotlinJvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 ktor = { id = "io.ktor.plugin", version.ref = "ktor" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+kotlinxSerializationJson = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }

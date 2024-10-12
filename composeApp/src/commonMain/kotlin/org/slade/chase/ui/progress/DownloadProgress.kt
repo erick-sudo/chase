@@ -7,7 +7,13 @@ import org.slade.chase.models.BytesReadCarrier
 import org.slade.chase.models.DownloadItem
 
 @Composable
-expect fun DownloadItem.DownloadProgress(
-    modifier: Modifier = Modifier,
+fun DownloadItem.DownloadProgress(
+    modifier: Modifier,
     bytesReadPartFlows: List<MutableStateFlow<BytesReadCarrier>>
-)
+) {
+    LinearByteProgress(
+        modifier = Modifier
+            .then(modifier),
+        bytesReadFlows = bytesReadPartFlows
+    )
+}

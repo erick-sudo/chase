@@ -1,11 +1,10 @@
 package org.slade.chase
 
+import android.annotation.SuppressLint
 import org.slade.chase.models.DownloadItem
 import org.slade.chase.models.DownloadState
-import java.nio.file.Files
-import java.nio.file.Path
 
-@Suppress("DefaultLocale")
+@SuppressLint("DefaultLocale")
 actual fun Double.suffixByteSize(): String {
     var final = this + 0.0
     var i = 0
@@ -19,11 +18,4 @@ actual fun Double.suffixByteSize(): String {
 
 actual fun DownloadItem.inferState(): DownloadState {
     TODO("Not yet implemented")
-}
-
-fun Path.ensureDirectoryCreated(): Path {
-    if(Files.notExists(this) && !Files.isDirectory(this)) {
-        Files.createDirectories(this)
-    }
-    return this
 }

@@ -2,6 +2,7 @@ package org.slade.chase.ui
 
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Path
+import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.min
 import kotlin.math.sin
@@ -36,11 +37,11 @@ fun getXY(radius: Float, center: Offset, angle: Float): Offset {
 }
 
 fun getX(radius: Float, center: Offset, angle: Float): Float {
-    return center.x + radius * cos(Math.toRadians(angle.toDouble()).toFloat())
+    return center.x + radius * cos(angle.toRadians())
 }
 
 fun getY(radius: Float, center: Offset, angle: Float): Float {
-    return center.y + radius * sin(Math.toRadians(angle.toDouble()).toFloat())
+    return center.y + radius * sin(angle.toRadians())
 }
 
 fun Double.closestMultiple(divisor: Double): Double {
@@ -53,4 +54,12 @@ fun Double.closestMultiple(divisor: Double): Double {
         true -> - remainder
         else -> divisor - remainder
     }
+}
+
+fun Float.toRadians(): Float {
+    return ((this % 360f) * (PI / 180f)).toFloat()
+}
+
+fun Double.toRadians(): Double {
+    return (this % 360.0) * (PI / 180.0)
 }

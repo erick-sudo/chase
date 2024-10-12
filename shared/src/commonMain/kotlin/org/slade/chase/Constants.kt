@@ -2,7 +2,7 @@ package org.slade.chase
 
 const val SERVER_PORT = 8080
 
-const val STATE_FILE_NAME = "state"
+const val STATE_FILE_NAME = "state.json"
 
 const val RANGE_THRESH_HOLD = 1024
 

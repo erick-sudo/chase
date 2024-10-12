@@ -5,7 +5,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import org.slade.chase.models.DownloadItem
 
@@ -15,7 +14,7 @@ private enum class NewDownloadStage {
 }
 
 @Composable
-actual fun NewDownload(
+fun NewDownload(
     onSuccess: (DownloadItem) -> Unit,
     onCancel: () -> Unit
 ) {
@@ -33,7 +32,7 @@ actual fun NewDownload(
     ) { newDownloadStage ->
         when(newDownloadStage) {
             NewDownloadStage.Create -> CreateDownloadWindow(
-                onSuccess = { url, saveTo ->
+                onSuccess = { url, _ ->
                     newDownloadUrl = url
                     stage = NewDownloadStage.Confirm
                 },

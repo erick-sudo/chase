@@ -134,8 +134,21 @@ compose.desktop {
 
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "org.slade.chase"
+            packageName = "Chase"
             packageVersion = "1.0.0"
+
+            linux {
+                debMaintainer = "Erick Ochieng Obuya"
+                debPackageVersion = "1.0.0"
+                iconFile.set(
+                    project.file("src/desktopMain/resources/icon.png")
+                )
+            }
         }
+
+//        run {
+//            // Define command-line arguments here
+//            args("Testing", "Command", "Line", "Arguments")
+//        }
     }
 }

@@ -3,43 +3,34 @@ package org.slade.chase.models
 import org.slade.chase.RANGE_THRESH_HOLD
 import org.slade.chase.Settings
 import org.slade.chase.ranges
-import java.io.Serializable
 import java.net.HttpURLConnection
 import java.net.URL
-import java.util.UUID
 
-actual class DownloadItem private actual constructor(url: String): IDownloadItem, Serializable {
-    override val id: String = UUID.randomUUID().toString()
+fun DownloadItem.Companion.init(url: String): DownloadItem = init().apply {
+    source = url
+    val uri = URL(source)
 
-    override val source: String = url
+    // Open the url connection
+    val httpURLConnection: HttpURLConnection = uri.openConnection() as HttpURLConnection
 
-    override var parts: List<DownloadPart> = emptyList()
+    httpURLConnection.requestMethod = "OPTIONS"
 
-    override var transferEncoding: TransferEncoding = TransferEncoding.Raw
+    val responseCode = httpURLConnection.responseCode
 
-    init {
+    httpURLConnection.inputStream.close()
 
-        val uri = URL(source)
+    if(responseCode == HttpURLConnection.HTTP_OK) {
 
-        // Open the url connection
-        val httpURLConnection: HttpURLConnection = uri.openConnection() as HttpURLConnection
+        val acceptRanges = httpURLConnection.headerFields["Accept-Ranges"]?.let { if(it.isNotEmpty()) it[0] else null } ?: ""
+        val contentLength = httpURLConnection.contentLengthLong
 
-        httpURLConnection.requestMethod = "OPTIONS"
+        if(acceptRanges == "bytes" && contentLength > RANGE_THRESH_HOLD) {
 
-        val responseCode = httpURLConnection.responseCode
+            transferEncoding = TransferEncoding.Range
 
-        httpURLConnection.inputStream.close()
-
-        if(responseCode == HttpURLConnection.HTTP_OK) {
-
-            val acceptRanges = httpURLConnection.headerFields["Accept-Ranges"]?.let { if(it.isNotEmpty()) it[0] else null } ?: ""
-            val contentLength = httpURLConnection.contentLengthLong
-
-            if(acceptRanges == "bytes" && contentLength > RANGE_THRESH_HOLD) {
-
-                transferEncoding = TransferEncoding.Range
-
-                parts = contentLength
+            parts.clear()
+            parts.addAll(
+                contentLength
                     .ranges(Settings.systemThreadCount)
                     .mapIndexed { index, (offset, end) ->
                         DownloadPart(
@@ -48,29 +39,16 @@ actual class DownloadItem private actual constructor(url: String): IDownloadItem
                             end = end
                         )
                     }
+            )
 
-            } else {
+        } else {
 
-                transferEncoding = TransferEncoding.Raw
+            transferEncoding = TransferEncoding.Raw
 
-                parts = listOf(
-                    DownloadPart(index = 0, offset = 0L, end = contentLength - 1)
-                )
-            }
-        }
-    }
-
-    actual val contentLength: Long by lazy {
-        try {
-            parts.last().end + 1
-        } catch (e: NoSuchElementException) {
-            0L
-        }
-    }
-
-    actual companion object {
-        actual fun init(url: String): DownloadItem {
-            return DownloadItem(url)
+            parts.clear()
+            parts.add(
+                DownloadPart(index = 0, offset = 0L, end = contentLength - 1)
+            )
         }
     }
 }

@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material3.Button
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -25,7 +27,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import org.slade.chase.models.BytesReadCarrier
 import org.slade.chase.models.DownloadItem
-import org.slade.chase.tasks.deserializeDownloadItems
 import org.slade.chase.ui.DownloadListItem
 import org.slade.chase.ui.screens.DownloadItemDetailsScreen
 import org.slade.chase.ui.theme.ChaseTheme
@@ -46,11 +47,13 @@ private fun ActiveDownloads() {
         mutableStateOf<List<Pair<DownloadItem, List<MutableStateFlow<BytesReadCarrier>>>>>(emptyList())
     }
 
+    val downloadsViewModel = ChaseLocalDownloadsViewModel.current
+
     LaunchedEffect("DeserializeDownloadItems") {
         coroutineScope.launch {
-            downloadItems = deserializeDownloadItems().map { downloadItem ->
-                downloadItem to downloadItem.parts.map { MutableStateFlow(BytesReadCarrier(it.id, it.index, it.retrieved)) }
-            }
+//            downloadItems = deserializeDownloadItems().map { downloadItem ->
+//                downloadItem to downloadItem.parts.map { MutableStateFlow(BytesReadCarrier(it.id, it.index, it.retrieved)) }
+//            }
 //            val items = mutableListOf<Pair<DownloadItem, List<MutableStateFlow<BytesReadCarrier>>>>()
 //            FakeRepo.downloadItems.map { url ->
 //                launch {
@@ -60,13 +63,24 @@ private fun ActiveDownloads() {
 //                }
 //            }.joinAll()
 //            downloadItems = items
-            //downloadItems.map { it.first }.serialize()
         }
     }
 
     LazyColumn(
         modifier = Modifier
     ) {
+        item {
+            Button(
+                onClick = {
+                    coroutineScope.launch {
+                        downloadsViewModel?.serialize(downloadItems.map { it.first })
+                    }
+                }
+            ) {
+                Text("Serialize")
+            }
+        }
+
         itemsIndexed(downloadItems) { index, (downloadItem, bytesReadStateFlows) ->
             DownloadListItem(
                 modifier = Modifier

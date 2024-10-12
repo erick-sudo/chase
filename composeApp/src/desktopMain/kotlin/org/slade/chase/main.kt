@@ -9,7 +9,9 @@ import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
 import org.slade.chase.ui.ChaseWindow
 
-fun main() = application {
+fun main(
+    args: Array<String>
+) = application {
 
     val windowState = rememberWindowState(
         size = DpSize(
@@ -27,6 +29,5 @@ fun main() = application {
         state = windowState
     ) {
         App()
-        //VoyagerApp()
     }
 }

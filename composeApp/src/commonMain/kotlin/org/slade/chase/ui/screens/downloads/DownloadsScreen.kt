@@ -13,10 +13,16 @@ import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.ProvidableCompositionLocal
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.core.screen.ScreenKey
@@ -31,6 +37,8 @@ import chase.composeapp.generated.resources.outline_hangout_video_24
 import chase.composeapp.generated.resources.outline_storage_24
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.DrawableResource
+import org.slade.chase.viewmodels.DownloadsUIState
+import org.slade.chase.viewmodels.DownloadsViewModel
 
 enum class DownloadCategory {
     All,
@@ -59,17 +67,35 @@ val categoryIcons: List<DrawableResource> = listOf(
     Res.drawable.outline_apps_24
 )
 
+@Composable
+expect fun provideDownloadsViewModel(): DownloadsViewModel
+
+val ChaseLocalDownloadsViewModel: ProvidableCompositionLocal<DownloadsViewModel?> = staticCompositionLocalOf { null }
+
+val ChaseLocalDownloadsUIState: ProvidableCompositionLocal<DownloadsUIState> = staticCompositionLocalOf { DownloadsUIState() }
+
 class DownloadsScreen: Screen {
 
     @Composable
     override fun Content() {
+
+        val downloadsViewModel = provideDownloadsViewModel()
+
+        val uiState by downloadsViewModel.downloadsUiState.collectAsState()
+
         Navigator(
             ActiveDownloadsScreen()
         ) { navigator ->
-            Downloads(
-                navigator = navigator
+
+            CompositionLocalProvider(
+                ChaseLocalDownloadsViewModel provides downloadsViewModel,
+                ChaseLocalDownloadsUIState provides uiState
             ) {
-                CurrentScreen()
+                Downloads(
+                    navigator = navigator
+                ) {
+                    CurrentScreen()
+                }
             }
         }
     }
@@ -105,23 +131,24 @@ private fun Downloads(
             downloadScreens.map { tab ->
                 val (title, screen) = tab
 
-                val isActive = (navigator?.lastItem?.key ?: "") == screen.key
+                val isActive = (navigator.lastItem.key) == screen.key
 
                 ElevatedButton(
                     colors = ButtonDefaults.elevatedButtonColors(
-                        containerColor = if(isActive) MaterialTheme.colorScheme.primaryContainer else Color.Unspecified,
-                        contentColor = if(isActive) MaterialTheme.colorScheme.onPrimaryContainer else Color.Unspecified
+                        containerColor = if(isActive) MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f) else Color.Unspecified,
+                        contentColor = if(isActive) MaterialTheme.colorScheme.primaryContainer else Color.Unspecified
                     ),
                     contentPadding = PaddingValues(horizontal = 16.dp, vertical = 2.dp),
                     onClick = {
                         coroutineScope.launch {
-                            navigator?.push(screen)
+                            navigator.push(screen)
                         }
                     }
                 ) {
                     Text(
                         text = title,
-                        style = MaterialTheme.typography.bodySmall,
+                        style = MaterialTheme.typography.bodyLarge,
+                        fontWeight = FontWeight.SemiBold,
                         maxLines = 1
                     )
                 }

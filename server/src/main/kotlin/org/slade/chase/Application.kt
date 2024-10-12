@@ -16,5 +16,9 @@ fun Application.module() {
         get("/") {
             call.respondText("Ktor: ${Greeting().greet()}")
         }
+
+        get("/success") {
+            call.respondText("Download Success")
+        }
     }
 }
