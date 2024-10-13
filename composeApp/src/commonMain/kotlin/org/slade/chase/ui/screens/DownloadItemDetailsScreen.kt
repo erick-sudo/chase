@@ -121,6 +121,7 @@ fun DownloadItemDetails(
 
     LaunchedEffect("FetchDownloadItem") {
         downloadsViewModel?.deserializeDownloadItem(downloadId)?.also { item ->
+            delay(3000)
             downloadItem = item
             bytesReadFlows = item.parts.map { MutableStateFlow(BytesReadCarrier(it.id, it.index, it.retrieved)) }
         }

@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.kotlinxSerializationJson)
+    alias(libs.plugins.ksp)
 }
 
 kotlin {
@@ -39,18 +40,36 @@ kotlin {
     jvm()
     
     sourceSets {
-        androidMain.dependencies {
-
+        val commonMain by getting {
+            dependencies {
+                // put your Multiplatform dependencies here
+                implementation(libs.ktor.client.core)
+                implementation(libs.kotlinx.coroutines.swing)
+                implementation(libs.kotlinx.serialization.json)
+            }
         }
 
-        commonMain.dependencies {
-            // put your Multiplatform dependencies here
-            implementation(libs.kotlinx.coroutines.swing)
-            implementation(libs.kotlinx.serialization.json)
+        val jvmAndAndroidMain by creating {
+            dependsOn(commonMain)
+            dependencies {
+                implementation(libs.ktor.client.okhttp)
+            }
         }
 
-        jvmMain.dependencies {
-            implementation(libs.kotlinx.coroutines.swing)
+        val androidMain by getting {
+            dependsOn(jvmAndAndroidMain)
+            dependencies {
+                implementation(libs.androidx.room.ktx)
+                implementation(libs.androidx.room.runtime)
+            }
+        }
+
+        val jvmMain by getting {
+            dependsOn(jvmAndAndroidMain)
+        }
+
+        iosMain.dependencies {
+            implementation(libs.ktor.client.darwin)
         }
     }
 }

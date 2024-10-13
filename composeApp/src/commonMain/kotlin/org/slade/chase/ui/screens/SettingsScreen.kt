@@ -98,17 +98,17 @@ private fun Settings() {
     }
 
     if(showDownloadsDirectoryChooser) {
-        openFileDialog(
-            title = "Select downloads folder",
-            onCloseRequest = {
-                showDownloadsDirectoryChooser = false
-            },
-            onResult = { dirSet ->
-                if(dirSet.isNotEmpty()) {
-                    downloadsDirectory = dirSet.elementAt(0)
-                }
-            }
-        )
+//        openFileDialog(
+//            title = "Select downloads folder",
+//            onCloseRequest = {
+//                showDownloadsDirectoryChooser = false
+//            },
+//            onResult = { dirSet ->
+//                if(dirSet.isNotEmpty()) {
+//                    downloadsDirectory = dirSet.elementAt(0)
+//                }
+//            }
+//        )
     }
 
     LazyVerticalStaggeredGrid(

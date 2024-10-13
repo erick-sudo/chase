@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.MaterialTheme
@@ -24,8 +25,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import cafe.adriel.voyager.core.annotation.ExperimentalVoyagerApi
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.core.screen.ScreenKey
+import cafe.adriel.voyager.jetpack.navigatorViewModel
 import cafe.adriel.voyager.navigator.CurrentScreen
 import cafe.adriel.voyager.navigator.Navigator
 import chase.composeapp.generated.resources.Res
@@ -76,10 +79,11 @@ val ChaseLocalDownloadsUIState: ProvidableCompositionLocal<DownloadsUIState> = s
 
 class DownloadsScreen: Screen {
 
+    @OptIn(ExperimentalVoyagerApi::class)
     @Composable
     override fun Content() {
 
-        val downloadsViewModel = provideDownloadsViewModel()
+        val downloadsViewModel = navigatorViewModel { DownloadsViewModel() }
 
         val uiState by downloadsViewModel.downloadsUiState.collectAsState()
 
@@ -147,8 +151,7 @@ private fun Downloads(
                 ) {
                     Text(
                         text = title,
-                        style = MaterialTheme.typography.bodyLarge,
-                        fontWeight = FontWeight.SemiBold,
+                        style = MaterialTheme.typography.bodyMedium,
                         maxLines = 1
                     )
                 }

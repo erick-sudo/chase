@@ -58,8 +58,6 @@ kotlin {
             implementation(libs.androidx.activity.compose)
             implementation(libs.androidx.navigation.compose)
             implementation(libs.androidx.compose.material.iconsExtended)
-            implementation(libs.androidx.room.ktx)
-            implementation(libs.androidx.room.runtime)
         }
         commonMain.dependencies {
             implementation(compose.runtime)

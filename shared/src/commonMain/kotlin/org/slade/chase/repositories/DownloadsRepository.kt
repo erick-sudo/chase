@@ -73,4 +73,4 @@ interface IDownloadsRepository {
     )
 }
 
-expect class DownloadsRepository: IDownloadsRepository
+expect class DownloadsRepository(): IDownloadsRepository

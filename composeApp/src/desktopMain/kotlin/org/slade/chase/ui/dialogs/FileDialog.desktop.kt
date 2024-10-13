@@ -17,10 +17,10 @@ actual fun openFileDialog(
 ) = AwtWindow(
     create = {
         val parent: Frame? = null
-        object: FileDialog(parent, title, LOAD) {
+        object : FileDialog(parent, title, LOAD) {
             override fun setVisible(b: Boolean) {
                 super.setVisible(b)
-                if(b) {
+                if (b) {
                     onResult(files.map { it.absolutePath }.toSet())
                     onCloseRequest()
                 }
@@ -31,10 +31,10 @@ actual fun openFileDialog(
             file = allowedExtensions.joinToString(";") { "*$it" }
 
             setFilenameFilter { file, s ->
-                if(mode == FileDialogMode.Directory) {
+                if (mode == FileDialogMode.Directory) {
                     Files.isDirectory(file.toPath())
                 } else {
-                    if(allowedExtensions.isEmpty()) true else allowedExtensions.any { s.endsWith(it) }
+                    if (allowedExtensions.isEmpty()) true else allowedExtensions.any { s.endsWith(it) }
                 }
             }
         }
